@@ -43,9 +43,10 @@ jobs:
           protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
           port: ${{ vars.FTP_PORT || 21 }}
           local-dir: ./dist/
-          server-dir: ${{ secrets.FTP_SERVER_DIR || vars.FTP_SERVER_DIR || 'silviociuffardi/' }}
+          server-dir: ${{ secrets.FTP_SERVER_DIR || vars.FTP_SERVER_DIR || 'public_html/silviociuffardi/' }}
           dangerous-clean-slate: true
           security: ${{ vars.FTP_SECURITY || 'loose' }}
+          log-level: verbose
           timeout: 120000
 
 
