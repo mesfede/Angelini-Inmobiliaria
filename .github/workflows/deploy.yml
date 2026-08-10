@@ -34,6 +34,21 @@ jobs:
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID || vars.VITE_FIREBASE_APP_ID }}
           VITE_FIREBASE_FIRESTORE_DATABASE_ID: ${{ secrets.VITE_FIREBASE_FIRESTORE_DATABASE_ID || vars.VITE_FIREBASE_FIRESTORE_DATABASE_ID }}
 
+      - name: Debug FTP Credentials
+        env:
+          USERNAME: ${{ secrets.FTP_USERNAME }}
+          SERVER: ${{ secrets.FTP_SERVER }}
+        run: |
+          echo "FTP Server: $SERVER"
+          if [ -z "$USERNAME" ]; then
+            echo "Username is empty!"
+          else
+            echo "FTP Username starts with: ${USERNAME:0:3} and ends with ${USERNAME: -3}"
+            if [[ "$USERNAME" != "u186730847" ]]; then
+              echo "WARNING: The FTP username does not match u186730847! You might be deploying to a different Hostinger account."
+            fi
+          fi
+
       - name: Sync files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -43,7 +58,7 @@ jobs:
           protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
           port: ${{ vars.FTP_PORT || 21 }}
           local-dir: ./dist/
-          server-dir: /public_html/silviociuffardi/
+          server-dir: ./silviociuffardi/
           dangerous-clean-slate: true
           security: ${{ vars.FTP_SECURITY || 'loose' }}
           log-level: verbose
