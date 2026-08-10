@@ -40,10 +40,10 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftp' }}
           port: ${{ vars.FTP_PORT || 21 }}
-          security: ${{ vars.FTP_SECURITY || 'loose' }}
           local-dir: ./dist/
-          server-dir: ${{ vars.FTP_SERVER_DIR || './' }}
+          server-dir: ${{ vars.FTP_SERVER_DIR || './public_html/' }}
+          security-strict: false
 
 
