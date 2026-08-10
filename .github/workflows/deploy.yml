@@ -44,6 +44,6 @@ jobs:
           port: ${{ vars.FTP_PORT || 21 }}
           local-dir: ./dist/
           server-dir: ${{ vars.FTP_SERVER_DIR || './public_html/' }}
-          security-strict: false
+          security: ${{ vars.FTP_SECURITY || 'loose' }}
 
 
