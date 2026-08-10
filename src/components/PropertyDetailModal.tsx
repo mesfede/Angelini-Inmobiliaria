@@ -566,6 +566,9 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                         autoPlay
                         loop
                         playsInline
+                        onError={() => {
+                          console.warn('Property video failed to load or play');
+                        }}
                         className="w-full h-full object-cover scale-[1.08] origin-center"
                       />
                     </div>

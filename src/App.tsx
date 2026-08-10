@@ -514,8 +514,8 @@ export default function App() {
             onEnded={() => {
               setCurrentVideoIndex((prev) => (prev + 1) % heroVideoPlaylist.length);
             }}
-            onError={(e) => {
-              console.warn('Hero video failed to load, switching to next:', e);
+            onError={() => {
+              console.warn('Hero video failed to load, switching to next playlist item');
               setCurrentVideoIndex((prev) => (prev + 1) % heroVideoPlaylist.length);
             }}
             style={{
