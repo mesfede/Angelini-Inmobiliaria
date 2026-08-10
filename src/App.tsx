@@ -103,6 +103,7 @@ export default function App() {
   // Global Realtime Properties State from Firebase
   const [properties, setProperties] = useState<Property[]>([]);
   const [isFirebaseConnected, setIsFirebaseConnected] = useState(false);
+  const [firebaseError, setFirebaseError] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Admin Auth & Modal States
@@ -143,10 +144,20 @@ export default function App() {
 
   // Realtime subscription to Firebase Firestore
   useEffect(() => {
-    const unsubscribe = subscribeToProperties((liveProperties, fromFirebase) => {
-      setProperties(liveProperties);
-      setIsFirebaseConnected(fromFirebase);
-    });
+    const unsubscribe = subscribeToProperties(
+      (liveProperties, fromFirebase) => {
+        setProperties(liveProperties);
+        setIsFirebaseConnected(fromFirebase);
+        if (fromFirebase) {
+          setFirebaseError(null);
+        }
+      },
+      (error) => {
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        console.warn('Firebase subscription warning:', error);
+        setFirebaseError(errorMsg);
+      }
+    );
     return () => unsubscribe();
   }, []);
 
@@ -476,6 +487,7 @@ export default function App() {
           onOpenAddProperty={handleOpenAddProperty}
           onLogout={handleLogoutAdmin}
           isFirebaseActive={isFirebaseConnected}
+          firebaseError={firebaseError}
           totalPropertiesCount={properties.length}
           onExportBackup={handleExportBackup}
           onImportBackup={handleImportBackup}
@@ -502,6 +514,10 @@ export default function App() {
             onEnded={() => {
               setCurrentVideoIndex((prev) => (prev + 1) % heroVideoPlaylist.length);
             }}
+            onError={(e) => {
+              console.warn('Hero video failed to load, switching to next:', e);
+              setCurrentVideoIndex((prev) => (prev + 1) % heroVideoPlaylist.length);
+            }}
             style={{
               filter: videoFilter,
               willChange: 'filter, transform',
@@ -509,11 +525,11 @@ export default function App() {
               transformOrigin: 'center center',
               backfaceVisibility: 'hidden',
             }}
-            className="absolute inset-0 w-full h-full object-cover object-top z-1"
+            className="absolute inset-0 w-full h-full object-cover object-top z-[1]"
           />
           {/* Cinematic soft overlay gradient: protects top logo/header and bottom search widgets without darkening video center */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60 pointer-events-none z-2" />
-          <div className="absolute inset-0 bg-amber-900/10 mix-blend-soft-light pointer-events-none z-2" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60 pointer-events-none z-[2]" />
+          <div className="absolute inset-0 bg-amber-900/10 mix-blend-soft-light pointer-events-none z-[2]" />
         </div>
 
         {/* 1. HEADER */}

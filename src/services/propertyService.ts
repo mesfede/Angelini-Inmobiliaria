@@ -12,8 +12,55 @@ import {
   Timestamp,
   writeBatch,
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { db, auth } from '../lib/firebase';
 import { Property } from '../types';
+
+export enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+export interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
+    isAnonymous?: boolean | null;
+    tenantId?: string | null;
+    providerInfo?: {
+      providerId?: string | null;
+      email?: string | null;
+    }[];
+  };
+}
+
+export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth?.currentUser?.uid || null,
+      email: auth?.currentUser?.email || null,
+      emailVerified: auth?.currentUser?.emailVerified || null,
+      isAnonymous: auth?.currentUser?.isAnonymous || null,
+      tenantId: auth?.currentUser?.tenantId || null,
+      providerInfo: auth?.currentUser?.providerData?.map(provider => ({
+        providerId: provider.providerId,
+        email: provider.email,
+      })) || []
+    },
+    operationType,
+    path
+  };
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
 
 const PROPERTIES_COLLECTION = 'properties';
 const DELETED_PROPERTIES_KEY = 'mef_deleted_property_ids';
@@ -303,11 +350,15 @@ export const addPropertyToFirestore = async (propertyData: Omit<Property, 'id'>)
     window.dispatchEvent(new Event('mef_local_properties_updated'));
 
     if (db) {
-      getDocs(collection(db, PROPERTIES_COLLECTION)).then(querySnapshot => {
-        querySnapshot.docs.forEach(docSnap => {
-          updateDoc(doc(db, PROPERTIES_COLLECTION, docSnap.id), { featured: false }).catch(() => {});
-        });
-      }).catch(e => console.warn('Error clearing other featured properties in Firestore:', e));
+      try {
+        const querySnapshot = await getDocs(collection(db, PROPERTIES_COLLECTION));
+        const updates = querySnapshot.docs.map(docSnap =>
+          updateDoc(doc(db, PROPERTIES_COLLECTION, docSnap.id), { featured: false })
+        );
+        await Promise.all(updates);
+      } catch (e) {
+        console.warn('Error clearing other featured properties in Firestore:', e);
+      }
     }
   }
 
@@ -315,16 +366,16 @@ export const addPropertyToFirestore = async (propertyData: Omit<Property, 'id'>)
   saveCustomLocalProperty(fullProp);
 
   if (db) {
-    const propertiesRef = collection(db, PROPERTIES_COLLECTION);
-    const cleanData = removeUndefinedValues({
-      ...propertyData,
-      createdAt: new Date().toISOString().split('T')[0],
-      updatedAt: Timestamp.now(),
-    });
-    // Don't wait for addDoc, it might hang if db is unconfigured
-    setDoc(doc(db, PROPERTIES_COLLECTION, docId), cleanData).catch(e => {
-      console.warn('Firestore addDoc notice:', e);
-    });
+    try {
+      const cleanData = removeUndefinedValues({
+        ...propertyData,
+        createdAt: new Date().toISOString().split('T')[0],
+        updatedAt: Timestamp.now(),
+      });
+      await setDoc(doc(db, PROPERTIES_COLLECTION, docId), cleanData);
+    } catch (e) {
+      handleFirestoreError(e, OperationType.WRITE, `${PROPERTIES_COLLECTION}/${docId}`);
+    }
   }
 
   return docId;
@@ -344,13 +395,17 @@ export const updatePropertyInFirestore = async (id: string, propertyData: Partia
     window.dispatchEvent(new Event('mef_local_properties_updated'));
 
     if (db) {
-      getDocs(collection(db, PROPERTIES_COLLECTION)).then(querySnapshot => {
-        querySnapshot.docs.forEach(docSnap => {
-          if (docSnap.id !== id) {
-             updateDoc(doc(db, PROPERTIES_COLLECTION, docSnap.id), { featured: false }).catch(() => {});
-          }
-        });
-      }).catch(e => console.warn('Error clearing other featured properties in Firestore on update:', e));
+      try {
+        const querySnapshot = await getDocs(collection(db, PROPERTIES_COLLECTION));
+        const updates = querySnapshot.docs
+          .filter(docSnap => docSnap.id !== id)
+          .map(docSnap =>
+            updateDoc(doc(db, PROPERTIES_COLLECTION, docSnap.id), { featured: false })
+          );
+        await Promise.all(updates);
+      } catch (e) {
+        console.warn('Error clearing other featured properties in Firestore on update:', e);
+      }
     }
   }
 
@@ -361,14 +416,16 @@ export const updatePropertyInFirestore = async (id: string, propertyData: Partia
   }
 
   if (db) {
-    const docRef = doc(db, PROPERTIES_COLLECTION, id);
-    const cleanData = removeUndefinedValues({
-      ...propertyData,
-      updatedAt: Timestamp.now(),
-    });
-    setDoc(docRef, cleanData, { merge: true }).catch(e => {
-      console.warn('Firestore update notice:', e);
-    });
+    try {
+      const docRef = doc(db, PROPERTIES_COLLECTION, id);
+      const cleanData = removeUndefinedValues({
+        ...propertyData,
+        updatedAt: Timestamp.now(),
+      });
+      await setDoc(docRef, cleanData, { merge: true });
+    } catch (e) {
+      handleFirestoreError(e, OperationType.WRITE, `${PROPERTIES_COLLECTION}/${id}`);
+    }
   }
 };
 
@@ -379,10 +436,12 @@ export const deletePropertyFromFirestore = async (id: string) => {
   markPropertyAsDeletedLocal(id);
   removeCustomLocalProperty(id);
   if (db) {
-    const docRef = doc(db, PROPERTIES_COLLECTION, id);
-    deleteDoc(docRef).catch(e => {
-      console.warn('Firestore deleteDoc notice:', e);
-    });
+    try {
+      const docRef = doc(db, PROPERTIES_COLLECTION, id);
+      await deleteDoc(docRef);
+    } catch (e) {
+      handleFirestoreError(e, OperationType.DELETE, `${PROPERTIES_COLLECTION}/${id}`);
+    }
   }
 };
 

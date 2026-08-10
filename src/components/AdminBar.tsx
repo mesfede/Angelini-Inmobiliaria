@@ -6,6 +6,7 @@ interface AdminBarProps {
   onOpenAddProperty: () => void;
   onLogout: () => void;
   isFirebaseActive: boolean;
+  firebaseError?: string | null;
   totalPropertiesCount: number;
   onExportBackup?: () => void;
   onImportBackup?: (file: File) => void;
@@ -15,6 +16,8 @@ interface AdminBarProps {
 export const AdminBar: React.FC<AdminBarProps> = ({
   onOpenAddProperty,
   onLogout,
+  isFirebaseActive,
+  firebaseError,
   totalPropertiesCount,
   onExportBackup,
   onImportBackup,
@@ -62,6 +65,22 @@ export const AdminBar: React.FC<AdminBarProps> = ({
         <span className="bg-zinc-800 text-zinc-300 text-xs px-2.5 py-1 rounded-full border border-zinc-700 font-medium">
           {totalPropertiesCount} {totalPropertiesCount === 1 ? 'propiedad' : 'propiedades'}
         </span>
+
+        {/* Firebase Status Badge */}
+        {isFirebaseActive ? (
+          <span className="flex items-center gap-1.5 bg-emerald-950/40 text-emerald-400 border border-emerald-800/60 text-[10px] px-2 py-0.5 rounded-md font-medium tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Nube Activa
+          </span>
+        ) : (
+          <span
+            className="flex items-center gap-1.5 bg-red-950/40 text-red-400 border border-red-900/60 text-[10px] px-2 py-0.5 rounded-md font-medium tracking-wide cursor-help"
+            title={firebaseError || "No conectado a Firebase Cloud. Las propiedades se guardarán localmente."}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            Modo Local (Offline)
+          </span>
+        )}
       </div>
 
       {/* Right side: Action buttons & Backup controls */}

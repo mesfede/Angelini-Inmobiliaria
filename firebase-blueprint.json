@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Property": {
+      "title": "Property",
+      "description": "Represents a real estate property listing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "refCode": { "type": "string" },
+        "title": { "type": "string" },
+        "operation": { "type": "string" },
+        "type": { "type": "string" },
+        "priceUSD": { "type": "number" },
+        "priceARS": { "type": "number" },
+        "expensesARS": { "type": "number" },
+        "location": { "type": "object" },
+        "coveredArea": { "type": "number" },
+        "totalArea": { "type": "number" },
+        "bedrooms": { "type": "number" },
+        "bathrooms": { "type": "number" },
+        "garages": { "type": "number" },
+        "description": { "type": "string" },
+        "images": { "type": "array" },
+        "featured": { "type": "boolean" },
+        "isNewDevelopment": { "type": "boolean" },
+        "isRecentlyUploaded": { "type": "boolean" },
+        "statusBanner": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "videoType": { "type": "string" },
+        "instagramUrl": { "type": "string" },
+        "amenities": { "type": "array" },
+        "agent": { "type": "object" },
+        "displayOrder": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "operation", "type", "priceUSD", "coveredArea", "totalArea"]
+    }
+  },
+  "firestore": {
+    "/properties/{propertyId}": {
+      "schema": "Property",
+      "description": "Collection of real estate property listings"
+    }
+  }
+}

@@ -29,9 +29,23 @@ export const Footer: React.FC<FooterProps> = ({
               Gestión inmobiliaria integral, venta y alquiler de viviendas, tasaciones profesionales y comercialización de lotes, quintas, campos y administración de consorcios en Azul y la zona.
             </p>
 
-            <div className="pt-2 flex items-center gap-2 text-xs text-amber-500 font-medium bg-amber-950/30 p-2.5 rounded-xl border border-amber-900/40 w-fit">
-              <Award className="w-4 h-4 text-[#946E00] shrink-0" />
-              <span>Martillero, Corredor y Admin. Consorcios · Mat. 1933 T. VII F. 224</span>
+            <div className="pt-2">
+              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-gradient-to-r from-[#85681E]/12 to-[#85681E]/3 border border-[#85681E]/25 max-w-md">
+                <div className="w-9 h-9 rounded-lg bg-[#85681E]/15 border border-[#85681E]/30 flex items-center justify-center text-[#c9b67e] shrink-0 mt-0.5">
+                  <Award className="w-5 h-5 text-[#c9b67e]" />
+                </div>
+                <div className="space-y-0.5">
+                  <span className="block text-[10px] font-black text-[#c9b67e] uppercase tracking-wider">
+                    Matrícula Profesional
+                  </span>
+                  <p className="text-xs text-zinc-200 font-semibold leading-tight">
+                    Martillero, Corredor y Admin. de Consorcios
+                  </p>
+                  <p className="text-[11px] font-medium text-zinc-400">
+                    Mat. 1933 T. VII F. 224
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -139,14 +153,15 @@ export const Footer: React.FC<FooterProps> = ({
 
         {/* Bottom copyright line */}
         <div className="pt-8 border-t border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
-          <p className="flex items-center gap-1.5 flex-wrap">
+          <p className="group flex items-center gap-1.5 flex-wrap">
             <span>© {new Date().getFullYear()} Inmobiliaria Silvio Ciuffardi. Todos los derechos reservados.</span>
             {onOpenAdminLogin && (
               <button
                 onClick={onOpenAdminLogin}
-                className="inline-flex items-center text-zinc-600 hover:text-zinc-300 transition-opacity cursor-pointer p-0.5 rounded opacity-0 hover:opacity-100 focus:opacity-100 ml-1"
+                className="inline-flex items-center justify-center text-zinc-500 hover:text-amber-500 transition-opacity duration-300 opacity-0 group-hover:opacity-100 hover:opacity-100 cursor-pointer p-1.5 rounded-lg ml-1"
                 title="Acceso de Administración"
                 aria-label="Acceso de Administración"
+                id="footer-admin-login-btn"
               >
                 <Lock className="w-3.5 h-3.5" />
               </button>
