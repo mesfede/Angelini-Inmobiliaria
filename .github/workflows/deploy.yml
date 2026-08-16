@@ -84,7 +84,7 @@ jobs:
           echo "=== Debugging FTP Connection ==="
           if [ -z "$CLEAN_FTP_SERVER" ]; then
             echo "Skipping connection checks due to missing server."
-            echo "target_dir=public_html/domains/unke.com.ar/public_html/angelini/" >> $GITHUB_ENV
+            echo "target_dir=unke.com.ar/public_html/angelini/" >> $GITHUB_ENV
             exit 0
           fi
           
@@ -94,15 +94,7 @@ jobs:
           echo "Testing plain FTP connection..."
           curl -s --connect-timeout 8 -u "$CLEAN_FTP_USERNAME:$CLEAN_FTP_PASSWORD" "ftp://$CLEAN_FTP_SERVER/" || echo "Plain FTP list failed or timed out."
           
-          # Check and set target dir
-          if curl -s -k --connect-timeout 8 -u "$CLEAN_FTP_USERNAME:$CLEAN_FTP_PASSWORD" "ftps://$CLEAN_FTP_SERVER/public_html/" > /dev/null 2>&1 || \
-             curl -s --connect-timeout 8 -u "$CLEAN_FTP_USERNAME:$CLEAN_FTP_PASSWORD" "ftp://$CLEAN_FTP_SERVER/public_html/" > /dev/null 2>&1; then
-            echo "Detected public_html folder at root."
-            echo "target_dir=public_html/domains/unke.com.ar/public_html/angelini/" >> $GITHUB_ENV
-          else
-            echo "No public_html folder detected at root (FTP user is likely jailed to the web root)."
-            echo "target_dir=domains/unke.com.ar/public_html/angelini/" >> $GITHUB_ENV
-          fi
+          echo "target_dir=unke.com.ar/public_html/angelini/" >> $GITHUB_ENV
 
       - name: Sync files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
