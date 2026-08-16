@@ -101,9 +101,11 @@ export const Logo: React.FC<LogoProps> = ({
   };
 
   const getSrc = () => {
-    if (variant === 'light') return '/angelini-logo-white.svg';
-    if (variant === 'scrolled') return '/angelini-logo-color-white-text.svg';
-    return '/angelini-logo-color.svg';
+    const base = import.meta.env.BASE_URL || '/';
+    const cleanBase = base.endsWith('/') ? base : `${base}/`;
+    if (variant === 'light') return `${cleanBase}angelini-logo-white.svg`;
+    if (variant === 'scrolled') return `${cleanBase}angelini-logo-color-white-text.svg`;
+    return `${cleanBase}angelini-logo-color.svg`;
   };
   const src = getSrc();
 
