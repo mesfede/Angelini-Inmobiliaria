@@ -1,7 +1,7 @@
 import React from 'react';
-import { Phone, Mail, MapPin, Instagram, Lock, ArrowRight, Award } from 'lucide-react';
+import { Phone, Mail, MapPin, Instagram, Lock, ArrowRight, Clock, ShieldCheck } from 'lucide-react';
 import { OperationType } from '../types';
-import { Logo } from './Logo';
+import { Logo, AngeliniEmblem } from './Logo';
 
 interface FooterProps {
   onSelectOperation: (op: OperationType | 'TODAS') => void;
@@ -15,34 +15,33 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenAdminLogin,
 }) => {
   return (
-    <footer id="contacto" className="bg-gradient-to-b from-[#121212] via-[#181818] to-black text-zinc-300 pt-16 pb-8 border-t-2 border-[#946E00] relative overflow-hidden">
-      {/* Background radial glow */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#946E00]/5 rounded-full blur-3xl pointer-events-none" />
+    <footer id="contacto" className="bg-gradient-to-b from-[#071D3F] via-[#051329] to-[#020B18] text-slate-300 pt-16 pb-8 border-t-4 border-[#D3122A] relative overflow-hidden">
+      {/* Background radial glow in Angelini brand colors */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#0B2F64]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-10 w-80 h-80 bg-[#D3122A]/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
           {/* Col 1: Brand Info (5 cols) */}
-          <div className="md:col-span-5 space-y-4">
-            <Logo variant="light" size="md" />
+          <div className="md:col-span-5 space-y-5">
+            <Logo variant="dark" size="md" showSlogan={true} />
 
-            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-md pt-1">
-              Gestión inmobiliaria integral, venta y alquiler de viviendas, tasaciones profesionales y comercialización de lotes, quintas, campos y administración de consorcios en Azul y la zona.
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md pt-1">
+              Gestión inmobiliaria profesional y transparente en Azul y toda la región. Venta, alquiler, tasaciones y comercialización de casas, departamentos, terrenos, lotes y campos.
             </p>
 
-            <div className="pt-2">
-              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-gradient-to-r from-[#85681E]/12 to-[#85681E]/3 border border-[#85681E]/25 max-w-md">
-                <div className="w-9 h-9 rounded-lg bg-[#85681E]/15 border border-[#85681E]/30 flex items-center justify-center text-[#c9b67e] shrink-0 mt-0.5">
-                  <Award className="w-5 h-5 text-[#c9b67e]" />
-                </div>
+            <div className="pt-1">
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 max-w-md">
+                <AngeliniEmblem sizeClass="w-10 h-10" />
                 <div className="space-y-0.5">
-                  <span className="block text-[10px] font-black text-[#c9b67e] uppercase tracking-wider">
-                    Matrícula Profesional
+                  <span className="block text-[11px] font-black text-[#D3122A] uppercase tracking-wider">
+                    Inmobiliaria Angelini
                   </span>
-                  <p className="text-xs text-zinc-200 font-semibold leading-tight">
-                    Martillero, Corredor y Admin. de Consorcios
+                  <p className="text-xs text-white font-bold leading-tight">
+                    Fuerte en raíces · Sólido en hogares
                   </p>
-                  <p className="text-[11px] font-medium text-zinc-400">
-                    Mat. 1933 T. VII F. 224
+                  <p className="text-[11px] font-medium text-slate-400">
+                    De Paula 1216 · Azul (Bs. As.)
                   </p>
                 </div>
               </div>
@@ -51,36 +50,36 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Col 2: Navigation Links (3 cols) */}
           <div className="md:col-span-3 space-y-4">
-            <h4 className="text-xs font-bold text-white uppercase tracking-widest border-b border-zinc-800 pb-2.5 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#946E00]" />
+            <h4 className="text-xs font-bold text-white uppercase tracking-widest border-b border-white/15 pb-2.5 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#D3122A]" />
               Navegación
             </h4>
             <ul className="space-y-3 text-xs sm:text-sm font-medium">
               <li>
                 <button
                   onClick={() => onSelectOperation('VENTA')}
-                  className="hover:text-[#946E00] transition-colors cursor-pointer flex items-center gap-1.5 group"
+                  className="hover:text-white transition-colors cursor-pointer flex items-center gap-2 group text-slate-300"
                 >
-                  <ArrowRight className="w-3 h-3 text-zinc-600 group-hover:text-[#946E00] transition-colors" />
-                  <span>Propiedades en Venta</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#D3122A] group-hover:translate-x-1 transition-transform" />
+                  <span className="group-hover:text-white">Propiedades en Venta</span>
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onSelectOperation('ALQUILER')}
-                  className="hover:text-[#946E00] transition-colors cursor-pointer flex items-center gap-1.5 group"
+                  className="hover:text-white transition-colors cursor-pointer flex items-center gap-2 group text-slate-300"
                 >
-                  <ArrowRight className="w-3 h-3 text-zinc-600 group-hover:text-[#946E00] transition-colors" />
-                  <span>Propiedades en Alquiler</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#D3122A] group-hover:translate-x-1 transition-transform" />
+                  <span className="group-hover:text-white">Propiedades en Alquiler</span>
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onSelectOperation('LOTES')}
-                  className="hover:text-[#946E00] transition-colors cursor-pointer flex items-center gap-1.5 group"
+                  className="hover:text-white transition-colors cursor-pointer flex items-center gap-2 group text-slate-300"
                 >
-                  <ArrowRight className="w-3 h-3 text-zinc-600 group-hover:text-[#946E00] transition-colors" />
-                  <span>Lotes y Terrenos</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#D3122A] group-hover:translate-x-1 transition-transform" />
+                  <span className="group-hover:text-white">Lotes y Terrenos</span>
                 </button>
               </li>
             </ul>
@@ -88,62 +87,79 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Col 3: Contact Details (4 cols) */}
           <div className="md:col-span-4 space-y-4">
-            <h4 className="text-xs font-bold text-white uppercase tracking-widest border-b border-zinc-800 pb-2.5 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#946E00]" />
+            <h4 className="text-xs font-bold text-white uppercase tracking-widest border-b border-white/15 pb-2.5 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#D3122A]" />
               Contacto Directo
             </h4>
-            <ul className="space-y-3 text-xs sm:text-sm">
+            <ul className="space-y-3.5 text-xs sm:text-sm">
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-[#946E00] shrink-0 mt-0.5 shadow-xs">
+                <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center text-[#D3122A] shrink-0 mt-0.5 shadow-sm">
                   <MapPin className="w-4 h-4" />
                 </div>
-                <span className="text-zinc-300 leading-snug">
-                  Azul, Provincia de Buenos Aires • Atención en Azul, Tandil, CABA y la Zona.
-                </span>
+                <div className="text-slate-200 leading-snug">
+                  <strong className="text-white block font-bold">De Paula 1216</strong>
+                  <span>Azul, Provincia de Buenos Aires</span>
+                </div>
+              </li>
+
+              <li className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center text-[#93C5FD] shrink-0 mt-0.5 shadow-sm">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <div className="text-slate-200 leading-snug">
+                  <strong className="text-white block font-bold">Horario de Atención</strong>
+                  <span>Lunes a Viernes de 9:00 a 15:00 hs.</span>
+                </div>
               </li>
 
               <li className="flex items-center">
                 <a
-                  href="https://wa.me/5492281591989"
+                  href="https://wa.me/5492281301464?text=Hola%20Inmobiliaria%20Angelini,%20quisiera%20hacer%20una%20consulta."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 group transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-[#946E00] shrink-0 shadow-xs group-hover:border-[#946E00] group-hover:bg-[#946E00]/20 transition-all">
+                  <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center text-[#D3122A] shrink-0 shadow-sm group-hover:bg-[#D3122A] group-hover:text-white transition-all">
                     <Phone className="w-4 h-4" />
                   </div>
-                  <span className="font-bold text-white group-hover:text-[#946E00] transition-colors">
-                    +54 9 2281 591989
-                  </span>
+                  <div className="leading-snug">
+                    <span className="text-[10px] text-slate-400 block font-medium">WhatsApp / Llamadas</span>
+                    <span className="font-bold text-white group-hover:text-[#D3122A] transition-colors text-sm">
+                      2281-301464 (+54 9 2281 301464)
+                    </span>
+                  </div>
                 </a>
               </li>
 
               <li className="flex items-center">
                 <a
-                  href="https://www.instagram.com/inmobiliaria_silvio_ciuffardi/"
+                  href="https://www.instagram.com/angelini_inmobiliaria/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 group transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-amber-500 shrink-0 shadow-xs group-hover:border-amber-500 group-hover:bg-amber-500/20 transition-all">
+                  <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center text-[#D3122A] shrink-0 shadow-sm group-hover:bg-[#D3122A] group-hover:text-white transition-all">
                     <Instagram className="w-4 h-4" />
                   </div>
-                  <span className="font-bold text-white group-hover:text-amber-300 transition-colors">
-                    @inmobiliaria_silvio_ciuffardi
-                  </span>
+                  <div className="leading-snug">
+                    <span className="text-[10px] text-slate-400 block font-medium">Instagram Oficial</span>
+                    <span className="font-bold text-white group-hover:text-[#D3122A] transition-colors">
+                      @angelini_inmobiliaria
+                    </span>
+                  </div>
                 </a>
               </li>
 
               <li className="flex items-center">
                 <a
-                  href="mailto:contacto@inmobiliariasilviociuffardi.ar"
+                  href="mailto:contacto@angeliniinmobiliaria.ar"
                   className="flex items-center gap-3 group transition-colors truncate"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-[#946E00] shrink-0 shadow-xs group-hover:border-[#946E00] group-hover:bg-[#946E00]/20 transition-all">
+                  <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center text-slate-300 shrink-0 shadow-sm group-hover:bg-white/20 group-hover:text-white transition-all">
                     <Mail className="w-4 h-4" />
                   </div>
-                  <span className="text-zinc-300 group-hover:text-white transition-colors truncate">
-                    contacto@inmobiliariasilviociuffardi.ar
+                  <span className="text-slate-300 group-hover:text-white transition-colors truncate">
+                    contacto@angeliniinmobiliaria.ar
                   </span>
                 </a>
               </li>
@@ -152,13 +168,13 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
 
         {/* Bottom copyright line */}
-        <div className="pt-8 border-t border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
+        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
           <p className="group flex items-center gap-1.5 flex-wrap">
-            <span>© {new Date().getFullYear()} Inmobiliaria Silvio Ciuffardi. Todos los derechos reservados.</span>
+            <span>© {new Date().getFullYear()} Inmobiliaria Angelini. Todos los derechos reservados.</span>
             {onOpenAdminLogin && (
               <button
                 onClick={onOpenAdminLogin}
-                className="inline-flex items-center justify-center text-zinc-500 hover:text-amber-500 transition-opacity duration-300 opacity-0 group-hover:opacity-100 hover:opacity-100 cursor-pointer p-1.5 rounded-lg ml-1"
+                className="inline-flex items-center justify-center text-slate-500 hover:text-white transition-opacity duration-300 opacity-0 group-hover:opacity-100 hover:opacity-100 cursor-pointer p-1.5 rounded-lg ml-1"
                 title="Acceso de Administración"
                 aria-label="Acceso de Administración"
                 id="footer-admin-login-btn"
@@ -166,6 +182,9 @@ export const Footer: React.FC<FooterProps> = ({
                 <Lock className="w-3.5 h-3.5" />
               </button>
             )}
+          </p>
+          <p className="text-[11px] text-slate-400">
+            De Paula 1216 · Azul, Prov. de Buenos Aires
           </p>
         </div>
       </div>

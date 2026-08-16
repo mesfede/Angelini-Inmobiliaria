@@ -348,10 +348,10 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
       instagramUrl: instagramUrl.trim(),
       amenities: selectedAmenities,
       agent: {
-        name: 'Inmobiliaria Silvio Ciuffardi',
-        phone: '+54 9 2281 591989',
-        email: 'contacto@inmobiliariasilviociuffardi.com.ar',
-        avatar: '/logo.png',
+        name: 'Angelini Inmobiliaria',
+        phone: '+54 9 2281 301464',
+        email: 'contacto@angeliniinmobiliaria.ar',
+        avatar: '/logo.svg',
       },
       createdAt: propertyToEdit?.createdAt || new Date().toISOString(),
     };
@@ -389,13 +389,13 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-zinc-950/80 backdrop-blur-md animate-fadeIn">
       <div className="bg-white w-full max-w-4xl h-[92vh] max-h-[900px] rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden flex flex-col text-left">
         {/* HEADER */}
-        <div className="bg-[#181818] text-white p-4 sm:px-6 flex items-center justify-between shrink-0 border-b border-zinc-800">
+        <div className="bg-[#051329] text-white p-4 sm:px-6 flex items-center justify-between shrink-0 border-b border-zinc-800">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#946E00] text-white flex items-center justify-center font-black">
+            <div className="w-9 h-9 rounded-xl bg-[#D3122A] text-white flex items-center justify-center font-black">
               <Plus className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-xs sm:text-sm font-bold text-[#946E00] uppercase tracking-wider">
+              <h3 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">
                 {propertyToEdit ? 'Editar Propiedad' : 'Carga de nueva propiedad'}
               </h3>
             </div>
@@ -1032,7 +1032,7 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#946E00] hover:bg-[#7A5B00] text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50"
+              className="bg-[#D3122A] hover:bg-[#B30E22] text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
               <span>{loading ? 'Guardando en Firebase...' : 'Guardar Propiedad'}</span>

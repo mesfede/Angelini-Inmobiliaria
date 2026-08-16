@@ -25,7 +25,7 @@ jobs:
       - name: Build project
         run: npm run build
         env:
-          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || '/silviociuffardi/' }}
+          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || '/angelini/' }}
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY || vars.VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN || vars.VITE_FIREBASE_AUTH_DOMAIN }}
           VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID || vars.VITE_FIREBASE_PROJECT_ID }}
@@ -34,34 +34,82 @@ jobs:
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID || vars.VITE_FIREBASE_APP_ID }}
           VITE_FIREBASE_FIRESTORE_DATABASE_ID: ${{ secrets.VITE_FIREBASE_FIRESTORE_DATABASE_ID || vars.VITE_FIREBASE_FIRESTORE_DATABASE_ID }}
 
+      - name: Clean and Validate FTP Credentials
+        id: clean_ftp
+        run: |
+          echo "=== Sanitizing and Validating FTP Settings ==="
+          
+          # 1. Clean FTP Server
+          RAW_SERVER="${{ secrets.FTP_SERVER }}"
+          CLEAN_SERVER=$(echo "$RAW_SERVER" | xargs)
+          # Strip protocol if present (e.g. ftp://, ftps://)
+          CLEAN_SERVER=$(echo "$CLEAN_SERVER" | sed -e 's|^[a-zA-Z]*://||')
+          # Strip any trailing path or slash
+          CLEAN_SERVER=$(echo "$CLEAN_SERVER" | sed -e 's|/.*$||')
+          
+          if [ -z "$CLEAN_SERVER" ]; then
+            echo "❌ ERROR: The FTP_SERVER secret is empty in GitHub."
+          else
+            echo "✅ FTP Server detected (masked). Length: ${#CLEAN_SERVER} chars."
+            if [[ "$CLEAN_SERVER" =~ ^[0-9a-zA-Z\.-]+$ ]]; then
+              echo "✅ Hostname format is valid (letters, numbers, dots, and hyphens)."
+            else
+              echo "⚠️ WARNING: Hostname contains unusual characters. Ensure there are no spaces or slashes."
+            fi
+          fi
+          echo "CLEAN_FTP_SERVER=$CLEAN_SERVER" >> $GITHUB_ENV
+
+          # 2. Clean FTP Username
+          RAW_USER="${{ secrets.FTP_USERNAME }}"
+          CLEAN_USER=$(echo "$RAW_USER" | xargs)
+          if [ -z "$CLEAN_USER" ]; then
+            echo "❌ ERROR: The FTP_USERNAME secret is empty in GitHub."
+          else
+            echo "✅ FTP Username detected (masked). Length: ${#CLEAN_USER} chars."
+          fi
+          echo "CLEAN_FTP_USERNAME=$CLEAN_USER" >> $GITHUB_ENV
+
+          # 3. Clean FTP Password
+          RAW_PASS="${{ secrets.FTP_PASSWORD }}"
+          CLEAN_PASS=$(echo "$RAW_PASS" | xargs)
+          if [ -z "$CLEAN_PASS" ]; then
+            echo "❌ ERROR: The FTP_PASSWORD secret is empty in GitHub."
+          else
+            echo "✅ FTP Password detected (masked). Length: ${#CLEAN_PASS} chars."
+          fi
+          echo "CLEAN_FTP_PASSWORD=$CLEAN_PASS" >> $GITHUB_ENV
+
       - name: Detect and Debug FTP Structure
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
           echo "=== Debugging FTP Connection ==="
-          echo "Connecting to FTP server to list root directory..."
-          curl -s -k --connect-timeout 10 -u "$FTP_USERNAME:$FTP_PASSWORD" "ftps://$FTP_SERVER/" || \
-          curl -s --connect-timeout 10 -u "$FTP_USERNAME:$FTP_PASSWORD" "ftp://$FTP_SERVER/" || \
-          echo "Could not list root directory"
+          if [ -z "$CLEAN_FTP_SERVER" ]; then
+            echo "Skipping connection checks due to missing server."
+            echo "target_dir=public_html/domains/unke.com.ar/public_html/angelini/" >> $GITHUB_ENV
+            exit 0
+          fi
+          
+          echo "Testing FTPS connection..."
+          curl -s -k --connect-timeout 8 -u "$CLEAN_FTP_USERNAME:$CLEAN_FTP_PASSWORD" "ftps://$CLEAN_FTP_SERVER/" || echo "FTPS list failed or timed out."
+          
+          echo "Testing plain FTP connection..."
+          curl -s --connect-timeout 8 -u "$CLEAN_FTP_USERNAME:$CLEAN_FTP_PASSWORD" "ftp://$CLEAN_FTP_SERVER/" || echo "Plain FTP list failed or timed out."
           
           # Check and set target dir
-          if curl -s -k --connect-timeout 10 -u "$FTP_USERNAME:$FTP_PASSWORD" "ftps://$FTP_SERVER/public_html/" > /dev/null 2>&1 || \
-             curl -s --connect-timeout 10 -u "$FTP_USERNAME:$FTP_PASSWORD" "ftp://$FTP_SERVER/public_html/" > /dev/null 2>&1; then
+          if curl -s -k --connect-timeout 8 -u "$CLEAN_FTP_USERNAME:$CLEAN_FTP_PASSWORD" "ftps://$CLEAN_FTP_SERVER/public_html/" > /dev/null 2>&1 || \
+             curl -s --connect-timeout 8 -u "$CLEAN_FTP_USERNAME:$CLEAN_FTP_PASSWORD" "ftp://$CLEAN_FTP_SERVER/public_html/" > /dev/null 2>&1; then
             echo "Detected public_html folder at root."
-            echo "target_dir=public_html/silviociuffardi/" >> $GITHUB_ENV
+            echo "target_dir=public_html/domains/unke.com.ar/public_html/angelini/" >> $GITHUB_ENV
           else
             echo "No public_html folder detected at root (FTP user is likely jailed to the web root)."
-            echo "target_dir=silviociuffardi/" >> $GITHUB_ENV
+            echo "target_dir=domains/unke.com.ar/public_html/angelini/" >> $GITHUB_ENV
           fi
 
       - name: Sync files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          server: ${{ env.CLEAN_FTP_SERVER }}
+          username: ${{ env.CLEAN_FTP_USERNAME }}
+          password: ${{ env.CLEAN_FTP_PASSWORD }}
           protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
           port: ${{ vars.FTP_PORT || 21 }}
           local-dir: ./dist/

@@ -138,14 +138,21 @@ app.get('/sitemap.xml', (_req, res) => {
 
 const distPath = path.join(process.cwd(), 'dist');
 
-// Build frontend if dist/index.html doesn't exist
-if (!fs.existsSync(path.join(distPath, 'index.html'))) {
-  console.log('Building application for production preview...');
-  try {
-    execSync('npx vite build', { stdio: 'inherit' });
-  } catch (err) {
-    console.error('Startup build failed:', err);
+// Always clean and rebuild on startup in the AI Studio environment to ensure preview uses '/' as base path
+console.log('Building application for local preview...');
+try {
+  if (fs.existsSync(distPath)) {
+    fs.rmSync(distPath, { recursive: true, force: true });
   }
+  execSync('npx vite build', {
+    stdio: 'inherit',
+    env: {
+      ...process.env,
+      VITE_BASE_PATH: '/'
+    }
+  });
+} catch (err) {
+  console.error('Startup build failed:', err);
 }
 
 // Serve static files

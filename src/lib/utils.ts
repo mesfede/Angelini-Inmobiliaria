@@ -54,3 +54,13 @@ export const formatFullAddress = (address?: string, zone?: string, city?: string
   return `${locName}, ${cleanAddr}`;
 };
 
+/**
+ * Formats property title with first letter in uppercase and the rest in lowercase.
+ */
+export const formatPropertyTitle = (title?: string): string => {
+  if (!title) return '';
+  const trimmed = title.trim();
+  if (!trimmed) return '';
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+};
+

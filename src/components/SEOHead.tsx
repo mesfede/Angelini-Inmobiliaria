@@ -12,14 +12,21 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   filters,
 }) => {
   useEffect(() => {
-    const siteName = 'Inmobiliaria Silvio Ciuffardi';
-    const baseUrl = 'https://inmobiliariasilviociuffardi.ar/';
+    const siteName = 'Angelini Inmobiliaria';
+    
+    // Dynamically calculate the base URL from the current window location
+    const currentOrigin = window.location.origin;
+    let currentPathname = window.location.pathname;
+    if (!currentPathname.endsWith('/')) {
+      currentPathname = currentPathname.substring(0, currentPathname.lastIndexOf('/') + 1);
+    }
+    const dynamicBaseUrl = `${currentOrigin}${currentPathname}`;
 
-    let title = `${siteName} | Inmobiliaria en Azul, Buenos Aires`;
+    let title = `${siteName} | Propiedades en Azul, Buenos Aires`;
     let description =
-      'Inmobiliaria Silvio Ciuffardi en Azul (Buenos Aires). Venta, alquiler y tasaciones profesionales de casas, departamentos, terrenos, locales y campos. Martillero y Corredor Público.';
-    let imageUrl = '/logo.png';
-    let pageUrl = baseUrl;
+      'Angelini Inmobiliaria en Azul (Buenos Aires). Venta, alquiler y tasaciones profesionales de casas, departamentos, terrenos, locales y campos. Fuerte en raíces, sólido en hogares.';
+    let imageUrl = `${dynamicBaseUrl}logo.svg`;
+    let pageUrl = dynamicBaseUrl;
     let schemaType = 'RealEstateAgent';
 
     if (selectedProperty) {
@@ -45,12 +52,12 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
         ? `$${selectedProperty.priceARS.toLocaleString('es-AR')}`
         : 'Consultar precio';
 
-      description = `${selectedProperty.title} ${opText} en ${cityText}. ${priceText}. ${specs ? `${specs}. ` : ''}${selectedProperty.description ? selectedProperty.description.substring(0, 140) + '...' : 'Tasaciones y gestión inmobiliaria profesional por Silvio Ciuffardi.'}`;
+      description = `${selectedProperty.title} ${opText} en ${cityText}. ${priceText}. ${specs ? `${specs}. ` : ''}${selectedProperty.description ? selectedProperty.description.substring(0, 140) + '...' : 'Tasaciones y gestión inmobiliaria profesional por Angelini Inmobiliaria.'}`;
       
       if (selectedProperty.images && selectedProperty.images.length > 0) {
         imageUrl = selectedProperty.images[0];
       }
-      pageUrl = `${baseUrl}?propiedad=${selectedProperty.id}`;
+      pageUrl = `${dynamicBaseUrl}?propiedad=${selectedProperty.id}`;
       schemaType = 'SingleFamilyResidence';
     } else if (filters && filters.operation !== 'TODAS') {
       const opName =
@@ -60,8 +67,8 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
           ? 'en Alquiler'
           : 'Lotes y Terrenos';
       title = `Propiedades ${opName} en Azul | ${siteName}`;
-      description = `Catálogo de propiedades ${opName.toLowerCase()} en Azul y la zona. Casas, departamentos, lotes y campos. Asesoramiento inmobiliario por Silvio Ciuffardi.`;
-      pageUrl = `${baseUrl}?operacion=${filters.operation}`;
+      description = `Catálogo de propiedades ${opName.toLowerCase()} en Azul y la zona. Casas, departamentos, lotes y campos. Asesoramiento profesional por Angelini Inmobiliaria.`;
+      pageUrl = `${dynamicBaseUrl}?operacion=${filters.operation}`;
     }
 
     // 1. Update Document Title
@@ -83,7 +90,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       let element = document.querySelector(`link[rel="${rel}"]`);
       if (!element) {
         element = document.createElement('link');
-        element.setAttribute('rel', rel);
+        element.setAttribute(rel, rel);
         document.head.appendChild(element);
       }
       element.setAttribute('href', href);
@@ -124,12 +131,13 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
           'seller': {
             '@type': 'RealEstateAgent',
             'name': siteName,
-            'telephone': '+5492281591989',
-            'url': baseUrl,
+            'telephone': '+5492281301464',
+            'url': dynamicBaseUrl,
           },
         },
         'address': {
           '@type': 'PostalAddress',
+          'streetAddress': 'De Paula 1216',
           'addressLocality': selectedProperty.location?.city || selectedProperty.location?.zone || 'Azul',
           'addressRegion': 'Buenos Aires',
           'addressCountry': 'AR',
@@ -144,13 +152,13 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
           '@context': 'https://schema.org',
           '@type': 'RealEstateAgent',
           'name': siteName,
-          'image': '/logo.png',
-          'telephone': '+5492281591989',
-          'email': 'contacto@inmobiliariasilviociuffardi.ar',
-          'url': baseUrl,
+          'image': `${dynamicBaseUrl}logo.svg`,
+          'telephone': '+5492281301464',
+          'email': 'contacto@angeliniinmobiliaria.ar',
+          'url': dynamicBaseUrl,
           'address': {
             '@type': 'PostalAddress',
-            'streetAddress': 'Azul',
+            'streetAddress': 'De Paula 1216',
             'addressLocality': 'Azul',
             'addressRegion': 'Buenos Aires',
             'postalCode': '7300',
@@ -163,15 +171,15 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
           },
           'priceRange': '$$',
           'sameAs': [
-            'https://www.instagram.com/inmobiliaria_silvio_ciuffardi/',
-            'https://wa.me/5492281591989',
+            'https://www.instagram.com/angelini_inmobiliaria/',
+            'https://wa.me/5492281301464',
           ],
         },
         {
           '@context': 'https://schema.org',
           '@type': 'WebSite',
           'name': siteName,
-          'url': baseUrl,
+          'url': dynamicBaseUrl,
         },
       ];
     }

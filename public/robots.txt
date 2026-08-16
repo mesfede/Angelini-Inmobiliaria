@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mefnegociosinmobiliarios.ar/sitemap.xml
+Sitemap: https://angeliniinmobiliaria.ar/sitemap.xml

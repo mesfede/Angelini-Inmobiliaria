@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, Navigation, ExternalLink, Search, Globe, Building2 } from 'lucide-react';
 import { Property } from '../types';
-import { getAssetUrl, formatLocationName, formatFullAddress } from '../lib/utils';
+import { getAssetUrl, formatLocationName, formatFullAddress, formatPropertyTitle } from '../lib/utils';
 import { Logo } from './Logo';
 
 
@@ -131,7 +131,7 @@ export const MapView: React.FC<MapViewProps> = ({
                       </span>
                     </div>
                     <span className="text-xs font-bold truncate leading-snug">
-                      {p.title}
+                      {formatPropertyTitle(p.title)}
                     </span>
                     <span className="text-[11px] font-extrabold text-[#946E00]">
                       {displayPrice(p)}
@@ -163,10 +163,10 @@ export const MapView: React.FC<MapViewProps> = ({
               <div className="flex items-center justify-between gap-2">
                 <span className={`text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider ${
                   activeProp.operation === 'VENTA'
-                    ? 'bg-black text-white'
+                    ? 'bg-[#02275c] text-white'
                     : activeProp.operation === 'ALQUILER' || activeProp.operation === 'ALQUILER TEMPORAL'
-                    ? 'bg-zinc-500 text-white'
-                    : 'bg-[#946E00] text-white'
+                    ? 'bg-[#0284c7] text-white'
+                    : 'bg-emerald-600 text-white'
                 }`}>
                   {activeProp.operation}
                 </span>
@@ -175,14 +175,14 @@ export const MapView: React.FC<MapViewProps> = ({
                 </span>
               </div>
               <h4 className="text-xs font-bold text-zinc-900 truncate mt-1">
-                {activeProp.title}
+                {formatPropertyTitle(activeProp.title)}
               </h4>
-              <p className="text-xs text-zinc-600 truncate flex items-center gap-1 mt-0.5">
-                <MapPin className="w-3 h-3 text-[#946E00] shrink-0" />
+              <p className="text-xs text-slate-600 truncate flex items-center gap-1 mt-0.5">
+                <MapPin className="w-3 h-3 text-[#D3122A] shrink-0" />
                 <span>{formatFullAddress(activeProp.location.address, activeProp.location.zone, activeProp.location.city)}</span>
               </p>
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-zinc-200">
-                <span className="text-sm font-extrabold text-[#946E00]">
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-200">
+                <span className="text-sm font-extrabold text-[#0B2F64]">
                   {displayPrice(activeProp)}
                 </span>
                 <div className="flex items-center gap-2">
@@ -192,14 +192,14 @@ export const MapView: React.FC<MapViewProps> = ({
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[11px] font-bold text-zinc-700 hover:text-[#946E00] flex items-center gap-1 transition-colors"
+                    className="text-[11px] font-bold text-slate-700 hover:text-[#0B2F64] flex items-center gap-1 transition-colors"
                   >
                     <span>Google Maps</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                   <button
                     onClick={() => onSelectProperty(activeProp)}
-                    className="bg-[#181818] hover:bg-[#946E00] text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+                    className="bg-[#0B2F64] hover:bg-[#071D3F] text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                   >
                     Ver Ficha
                   </button>
@@ -211,10 +211,10 @@ export const MapView: React.FC<MapViewProps> = ({
       </div>
 
       {/* Property Cards Strip below map */}
-      <div className="p-4 bg-zinc-50 border-t border-zinc-200">
+      <div className="p-4 bg-slate-50 border-t border-slate-200">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-xs font-bold text-zinc-600 uppercase tracking-wider flex items-center gap-1.5">
-            <Building2 className="w-3.5 h-3.5 text-[#946E00]" />
+          <h4 className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5 font-['Playfair_Display','Libre_Baskerville',Georgia,serif]">
+            <Building2 className="w-3.5 h-3.5 text-[#D3122A]" />
             <span>Propiedades Ubicadas en el Mapa ({filteredMapProperties.length})</span>
           </h4>
         </div>
@@ -228,8 +228,8 @@ export const MapView: React.FC<MapViewProps> = ({
               }}
               className={`w-[78%] sm:w-64 rounded-xl p-3 border shadow-xs transition-all cursor-pointer shrink-0 flex gap-3 items-center ${
                 activeProp?.id === p.id
-                  ? 'bg-zinc-900 text-white border-[#946E00] ring-2 ring-[#946E00]/30'
-                  : 'bg-white text-zinc-900 border-zinc-200 hover:border-[#946E00]'
+                  ? 'bg-[#0B2F64] text-white border-[#0B2F64] ring-2 ring-[#0B2F64]/30'
+                  : 'bg-white text-slate-900 border-slate-200 hover:border-[#0B2F64]'
               }`}
             >
               <img
@@ -240,11 +240,11 @@ export const MapView: React.FC<MapViewProps> = ({
               />
               <div className="flex-1 min-w-0 text-left">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-[#946E00] uppercase">{p.operation}</span>
-                  <span className="text-[9px] text-zinc-400 font-medium">{formatLocationName(p.location.zone, p.location.city)}</span>
+                  <span className="text-[10px] font-bold text-[#D3122A] uppercase">{p.operation}</span>
+                  <span className="text-[9px] text-slate-400 font-medium">{formatLocationName(p.location.zone, p.location.city)}</span>
                 </div>
                 <h5 className="text-xs font-bold truncate mt-0.5">{p.title}</h5>
-                <p className="text-[11px] font-bold text-[#946E00] mt-0.5">{displayPrice(p)}</p>
+                <p className="text-[11px] font-bold text-[#0B2F64] mt-0.5">{displayPrice(p)}</p>
               </div>
             </div>
           ))}

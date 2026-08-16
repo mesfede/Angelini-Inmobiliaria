@@ -4,7 +4,7 @@ import path from 'path';
 import {defineConfig} from 'vite';
 
 export default defineConfig(({ mode }) => {
-  const base = process.env.VITE_BASE_PATH || (mode === 'production' ? '/silviociuffardi/' : '/');
+  const base = process.env.VITE_BASE_PATH !== undefined ? process.env.VITE_BASE_PATH : '/angelini/';
   return {
     base,
     plugins: [react(), tailwindcss()],

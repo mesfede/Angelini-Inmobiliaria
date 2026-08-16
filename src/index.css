@@ -2,20 +2,35 @@
 
 @layer base {
   :root {
-    --mef-black: #181818;
-    --mef-dark: #1E1E1E;
-    --mef-gray-dark: #2A2A2A;
-    --mef-green: #946E00;
-    --mef-green-hover: #7A5B00;
-    --mef-green-light: #FAF6EB;
-    --mef-green-border: #D4AC2B;
-    --mef-light-bg: #F9F8F5;
-    --mef-cream: #FAF9F6;
+    --angelini-navy: #0B2F64;
+    --angelini-navy-dark: #071D3F;
+    --angelini-navy-deep: #051329;
+    --angelini-navy-light: #EEF4FC;
+    --angelini-navy-border: #93C5FD;
+    --angelini-red: #D3122A;
+    --angelini-red-hover: #B30E22;
+    --angelini-red-light: #FDF2F4;
+    --angelini-red-border: #FCA5A5;
+    --angelini-dark: #0A192F;
+    --angelini-light-bg: #F8FAFC;
+    --angelini-cream: #F1F5F9;
+
+    /* Legacy mapping for backward compatibility if any reference remains */
+    --mef-black: #071D3F;
+    --mef-dark: #0A192F;
+    --mef-gray-dark: #1E293B;
+    --mef-green: #0B2F64;
+    --mef-green-hover: #08224A;
+    --mef-green-light: #EEF4FC;
+    --mef-green-border: #93C5FD;
+    --mef-light-bg: #F8FAFC;
+    --mef-cream: #F1F5F9;
   }
 }
 
-.font-serif-brand {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+.font-serif-brand,
+.font-serif-classic {
+  font-family: 'Playfair Display', 'Libre Baskerville', 'Cormorant Garamond', 'EB Garamond', Georgia, 'Times New Roman', serif;
 }
 
 /* Custom Scrollbar */
@@ -25,21 +40,21 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #946E00;
+  background: #0B2F64;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #7A5B00;
+  background: #D3122A;
 }
 
 .bg-brand-pattern {
-  background-color: #181818;
-  background-image: radial-gradient(#946E00 0.85px, transparent 0.85px), radial-gradient(#946E00 0.85px, #181818 0.85px);
+  background-color: #071D3F;
+  background-image: radial-gradient(#0B2F64 0.9px, transparent 0.9px), radial-gradient(#D3122A 0.7px, #071D3F 0.7px);
   background-size: 28px 28px;
   background-position: 0 0, 14px 14px;
 }
@@ -52,3 +67,4 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+

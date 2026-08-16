@@ -52,32 +52,32 @@ export const AdminBar: React.FC<AdminBarProps> = ({
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 w-full bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800/80 px-4 sm:px-8 py-2.5 sm:py-3 min-h-[52px] flex items-center justify-between gap-3 shadow-lg">
+    <div className="fixed top-0 left-0 right-0 z-50 w-full bg-[#051329]/95 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-2.5 sm:py-3 min-h-[52px] flex items-center justify-between gap-3 shadow-lg">
       {/* Left side: Administrator indicator & Count */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#946E00] animate-pulse"></span>
-          <span className="text-zinc-100 font-semibold text-xs sm:text-sm tracking-wide flex items-center gap-2">
-            <ShieldCheck className="w-4.5 h-4.5 text-[#946E00]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#D3122A] animate-pulse"></span>
+          <span className="text-white font-semibold text-xs sm:text-sm tracking-wide flex items-center gap-2 font-['Playfair_Display','Libre_Baskerville',Georgia,serif]">
+            <ShieldCheck className="w-4.5 h-4.5 text-[#D3122A]" />
             <span className="hidden sm:inline">Modo Administrador</span>
           </span>
         </div>
-        <span className="bg-zinc-800 text-zinc-300 text-xs px-2.5 py-1 rounded-full border border-zinc-700 font-medium">
+        <span className="bg-white/10 text-slate-200 text-xs px-2.5 py-1 rounded-full border border-white/15 font-medium">
           {totalPropertiesCount} {totalPropertiesCount === 1 ? 'propiedad' : 'propiedades'}
         </span>
 
         {/* Firebase Status Badge */}
         {isFirebaseActive ? (
-          <span className="flex items-center gap-1.5 bg-emerald-950/40 text-emerald-400 border border-emerald-800/60 text-[10px] px-2 py-0.5 rounded-md font-medium tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span className="flex items-center gap-1.5 bg-emerald-950/60 text-emerald-300 border border-emerald-500/40 text-[10px] px-2 py-0.5 rounded-md font-medium tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             Nube Activa
           </span>
         ) : (
           <span
-            className="flex items-center gap-1.5 bg-red-950/40 text-red-400 border border-red-900/60 text-[10px] px-2 py-0.5 rounded-md font-medium tracking-wide cursor-help"
+            className="flex items-center gap-1.5 bg-red-950/60 text-red-300 border border-red-500/40 text-[10px] px-2 py-0.5 rounded-md font-medium tracking-wide cursor-help"
             title={firebaseError || "No conectado a Firebase Cloud. Las propiedades se guardarán localmente."}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-red-400"></span>
             Modo Local (Offline)
           </span>
         )}
@@ -86,7 +86,7 @@ export const AdminBar: React.FC<AdminBarProps> = ({
       {/* Right side: Action buttons & Backup controls */}
       <div className="flex items-center gap-2 sm:gap-2.5">
         {msg && (
-          <span className="text-[#946E00] font-semibold text-xs flex items-center gap-1 mr-1">
+          <span className="text-emerald-400 font-semibold text-xs flex items-center gap-1 mr-1">
             <CheckCircle2 className="w-4 h-4" />
             <span>{msg}</span>
           </span>
@@ -120,10 +120,10 @@ export const AdminBar: React.FC<AdminBarProps> = ({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+            className="bg-white/10 hover:bg-white/15 text-slate-200 border border-white/20 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
             title="Importar catálogo desde archivo JSON a Firebase"
           >
-            <Upload className="w-4 h-4 text-amber-400" />
+            <Upload className="w-4 h-4 text-slate-300" />
             <span className="inline">Importar JSON</span>
           </button>
         )}
@@ -133,10 +133,10 @@ export const AdminBar: React.FC<AdminBarProps> = ({
           <button
             type="button"
             onClick={onExportBackup}
-            className="bg-zinc-900 hover:bg-zinc-800 active:scale-[0.98] text-zinc-200 border border-zinc-700/80 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+            className="bg-white/10 hover:bg-white/15 text-slate-200 border border-white/20 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
             title="Descargar copia de seguridad en archivo JSON"
           >
-            <Download className="w-4 h-4 text-[#946E00]" />
+            <Download className="w-4 h-4 text-[#D3122A]" />
             <span className="hidden sm:inline">Descargar Backup</span>
           </button>
         )}
@@ -144,7 +144,7 @@ export const AdminBar: React.FC<AdminBarProps> = ({
         <button
           type="button"
           onClick={onOpenAddProperty}
-          className="bg-[#946E00] hover:bg-[#7A5B00] active:scale-[0.98] text-white px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer flex items-center gap-2"
+          className="bg-[#D3122A] hover:bg-[#B30E22] active:scale-[0.98] text-white px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer flex items-center gap-2"
         >
           <Plus className="w-4.5 h-4.5 stroke-[2.5]" />
           <span>Cargar Propiedad</span>
@@ -153,10 +153,10 @@ export const AdminBar: React.FC<AdminBarProps> = ({
         <button
           type="button"
           onClick={onLogout}
-          className="bg-zinc-900 hover:bg-zinc-800 hover:text-white active:scale-[0.98] text-zinc-300 border border-zinc-800 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+          className="bg-white/10 hover:bg-white/20 hover:text-white active:scale-[0.98] text-slate-300 border border-white/15 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center gap-1.5"
           title="Cerrar sesión de administrador"
         >
-          <LogOut className="w-4 h-4 text-zinc-400" />
+          <LogOut className="w-4 h-4 text-slate-400" />
           <span className="hidden sm:inline">Salir</span>
         </button>
       </div>

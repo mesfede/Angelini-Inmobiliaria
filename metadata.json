@@ -1,6 +1,6 @@
 {
-  "name": "Silvio Ciuffardi",
-  "description": "Rediseño moderno e interactivo para Inmobiliaria Silvio Ciuffardi en Azul (Bs. As.). Buscador de propiedades en Venta, Alquiler y Lotes.",
+  "name": "Angelini Inmobiliaria",
+  "description": "Sitio web oficial de Angelini Inmobiliaria en Azul (Bs. As.). Fuerte en raíces, Sólido en hogares. Venta, alquiler y tasaciones de propiedades.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

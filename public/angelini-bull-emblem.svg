@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <filter id="badgeShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <!-- Outer Navy Circle -->
+  <circle cx="256" cy="256" r="236" fill="#0B2F64" stroke="#FFFFFF" stroke-width="12" filter="url(#badgeShadow)"/>
+  <!-- Middle White Ring -->
+  <circle cx="256" cy="256" r="212" fill="none" stroke="#FFFFFF" stroke-width="14"/>
+  <!-- Inner Red Fill -->
+  <circle cx="256" cy="256" r="196" fill="#D3122A"/>
+  
+  <!-- Bull Silhouette in Navy with White Contour -->
+  <g transform="translate(48, 88) scale(0.82)">
+    <path d="M420 180 C400 165 375 160 355 165 C345 150 330 135 315 130 C300 120 280 115 250 115 C210 115 170 135 140 160 C120 170 100 185 85 205 C75 220 70 235 60 235 C50 235 40 245 42 260 C45 275 60 285 75 285 C80 300 75 320 65 340 C60 350 70 360 82 355 C95 350 105 330 112 310 C125 320 145 325 170 325 C175 345 170 375 160 395 C155 405 168 415 178 408 C195 395 205 365 210 340 C235 342 265 340 290 330 C295 355 292 385 285 405 C280 415 294 422 302 414 C318 398 325 365 328 335 C350 320 370 300 385 275 C400 250 410 220 420 180 Z" 
+      fill="#0B2F64" stroke="#FFFFFF" stroke-width="14" stroke-linejoin="round" stroke-linecap="round" />
+    <!-- Horns -->
+    <path d="M410 155 C435 140 460 115 470 85 C460 95 440 110 420 118 C405 125 385 130 370 128 C385 138 400 148 410 155 Z" fill="#FFFFFF" stroke="#0B2F64" stroke-width="3"/>
+    <path d="M360 135 C380 110 405 80 430 65 C415 80 395 98 375 112 Z" fill="#FFFFFF" stroke="#0B2F64" stroke-width="2"/>
+    <!-- Eye -->
+    <circle cx="370" cy="180" r="6" fill="#FFFFFF" />
+    <!-- Tail Curve -->
+    <path d="M75 235 C55 210 50 170 65 140 C70 130 60 125 55 135 C40 165 42 210 65 245 Z" fill="#FFFFFF"/>
+    <!-- Muscle Lines -->
+    <path d="M330 175 C310 190 300 220 310 250" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.9"/>
+    <path d="M230 160 C210 185 205 230 220 270" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
+    <path d="M145 205 C135 230 135 260 150 280" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.9"/>
+  </g>
+</svg>

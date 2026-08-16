@@ -1,4 +1,3 @@
-import { loadImage, createCanvas } from '@napi-rs/canvas';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -7,6 +6,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function processOriginalLogo() {
+  let canvasModule;
+  try {
+    canvasModule = await import('@napi-rs/canvas');
+  } catch (err) {
+    console.warn('\n⚠️ ADVERTENCIA: @napi-rs/canvas no está instalado o no se pudo cargar.');
+    console.warn('Se omitirá el procesamiento del logo, pero la compilación continuará con los recursos existentes.');
+    console.warn('Para solucionar esto y habilitar el recorte de logos, ejecutá "npm install" en tu terminal.\n');
+    process.exit(0);
+  }
+
+  const { loadImage, createCanvas } = canvasModule;
   const publicDir = path.join(__dirname, 'public');
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
@@ -88,6 +98,54 @@ async function processOriginalLogo() {
   console.log('Processed original user logo cleanly into /public !');
 }
 
-processOriginalLogo();
+async function generateFavicons() {
+  let sharp;
+  try {
+    sharp = (await import('sharp')).default;
+  } catch (err) {
+    console.warn('⚠️ Sharp is not installed or could not be loaded. Skipping PNG/ICO favicon generation.');
+    return;
+  }
+
+  const publicDir = path.join(__dirname, 'public');
+  const svgPath = path.join(publicDir, 'favicon.svg');
+
+  if (!fs.existsSync(svgPath)) {
+    console.warn('favicon.svg not found, cannot generate PNG favicons.');
+    return;
+  }
+
+  try {
+    console.log('Generating high-quality favicons from SVG...');
+
+    // 1. Generate favicon.png (32x32)
+    await sharp(svgPath)
+      .resize(32, 32)
+      .png()
+      .toFile(path.join(publicDir, 'favicon.png'));
+
+    // 2. Generate apple-touch-icon.png (180x180) with transparent/padding
+    await sharp(svgPath)
+      .resize(180, 180)
+      .png()
+      .toFile(path.join(publicDir, 'apple-touch-icon.png'));
+
+    // 3. Generate favicon.ico (32x32)
+    const pngBuffer = await sharp(svgPath).resize(32, 32).png().toBuffer();
+    fs.writeFileSync(path.join(publicDir, 'favicon.ico'), pngBuffer);
+
+    console.log('✅ Favicons (PNG, ICO, Apple-Touch) generated successfully!');
+  } catch (err) {
+    console.error('Failed to generate favicons:', err);
+  }
+}
+
+async function run() {
+  await processOriginalLogo();
+  await generateFavicons();
+}
+
+run();
+
 
 

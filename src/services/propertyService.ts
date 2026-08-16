@@ -178,9 +178,9 @@ const mapDocToProperty = (id: string, data: any): Property => {
     amenities: Array.isArray(data.amenities) ? data.amenities : [],
     lotFeatures: data.lotFeatures || undefined,
     agent: {
-      name: data.agent?.name || 'Inmobiliaria Silvio Ciuffardi',
-      phone: data.agent?.phone || '+54 9 2281 591989',
-      email: data.agent?.email || 'contacto@inmobiliariasilviociuffardi.com.ar',
+      name: data.agent?.name || 'Angelini Inmobiliaria',
+      phone: data.agent?.phone || '+54 9 2281 301464',
+      email: data.agent?.email || 'contacto@angeliniinmobiliaria.ar',
       avatar: data.agent?.avatar || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80',
     },
     createdAt: data.createdAt || new Date().toISOString().split('T')[0],

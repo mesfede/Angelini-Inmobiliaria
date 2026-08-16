@@ -105,34 +105,34 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
                 <span className="inline-block sm:w-[4px] h-[0.8em] bg-white ml-1.5 animate-pulse align-middle rounded-full drop-shadow-[0_2px_1.5px_rgba(0,0,0,0.95)]" />
               )}
             </span>
-            {/* Line 2: Green Accent Text (Bold / Black) */}
+            {/* Line 2: Institutional Red Accent Text (Bold / Black) */}
             <span 
-              className="block sm:text-5xl lg:text-[3.6rem] font-black text-[#946E00] leading-tight text-center drop-shadow-[0_2px_1.5px_rgba(0,0,0,0.95)]"
+              className="block sm:text-5xl lg:text-[3.6rem] font-black text-[#D3122A] leading-tight text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]"
             >
               {typedGreen || '\u00A0'}
               {charCount > currentPhraseObj.prefix.length && (
-                <span className="inline-block sm:w-[4px] h-[0.8em] bg-[#946E00] ml-1.5 animate-pulse align-middle rounded-full drop-shadow-[0_2px_1.5px_rgba(0,0,0,0.95)]" />
+                <span className="inline-block sm:w-[4px] h-[0.8em] bg-[#D3122A] ml-1.5 animate-pulse align-middle rounded-full drop-shadow-[0_2px_2px_rgba(0,0,0,0.95)]" />
               )}
             </span>
           </h1>
         </div>
 
         {/* TRANSLUCENT WHITE GLASS SEARCH WIDGET CARD */}
-        <div className="mt-0 sm:mt-4 bg-white/20 backdrop-blur-[4px] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] p-4 sm:p-5 text-zinc-900 border border-white/40 max-w-6xl mx-auto transition-all">
+        <div className="mt-0 sm:mt-4 bg-white/20 backdrop-blur-[6px] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 sm:p-5 text-slate-900 border border-white/40 max-w-6xl mx-auto transition-all">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
             {/* Tipo de Propiedad Dropdown (4 cols) */}
             <div className="flex flex-col text-left md:col-span-4">
-              <label className="text-xs font-black text-white uppercase tracking-wider mb-1 flex items-center gap-1 drop-shadow-md">
-                <Building2 className="w-4 h-4 text-[#946E00]" />
+              <label className="text-xs font-black text-white uppercase tracking-wider mb-1 flex items-center gap-1.5 drop-shadow-md">
+                <Building2 className="w-4 h-4 text-[#D3122A]" />
                 <span>Tipo de Propiedad</span>
               </label>
               <select
                 value={filters.propertyType}
                 onChange={(e) => onUpdateFilters({ propertyType: e.target.value as PropertyType | 'TODOS' })}
-                className="w-full h-12 bg-white/95 border border-white/50 rounded-xl px-3 text-sm sm:text-base font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#946E00] focus:border-[#946E00] transition-all cursor-pointer shadow-sm accent-[#946E00]"
+                className="w-full h-12 bg-white/95 border border-white/50 rounded-xl px-3 text-sm sm:text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0B2F64] focus:border-[#0B2F64] transition-all cursor-pointer shadow-sm"
               >
                 {propertyTypeOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value} className="bg-white text-zinc-900 py-1">
+                  <option key={opt.value} value={opt.value} className="bg-white text-slate-900 py-1">
                     {opt.label}
                   </option>
                 ))}
@@ -141,17 +141,17 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
 
             {/* Operación Dropdown (4 cols) */}
             <div className="flex flex-col text-left md:col-span-4">
-              <label className="text-xs font-black text-white uppercase tracking-wider mb-1 flex items-center gap-1 drop-shadow-md">
-                <DollarSign className="w-4 h-4 text-[#946E00]" />
+              <label className="text-xs font-black text-white uppercase tracking-wider mb-1 flex items-center gap-1.5 drop-shadow-md">
+                <DollarSign className="w-4 h-4 text-[#D3122A]" />
                 <span>Operación</span>
               </label>
               <select
                 value={filters.operation}
                 onChange={(e) => onUpdateFilters({ operation: e.target.value as any })}
-                className="w-full h-12 bg-white/95 border border-white/50 rounded-xl px-3 text-sm sm:text-base font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#946E00] focus:border-[#946E00] transition-all cursor-pointer shadow-sm accent-[#946E00]"
+                className="w-full h-12 bg-white/95 border border-white/50 rounded-xl px-3 text-sm sm:text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0B2F64] focus:border-[#0B2F64] transition-all cursor-pointer shadow-sm"
               >
                 {operationOptions.map((op) => (
-                  <option key={op.value} value={op.value} className="bg-white text-zinc-900 py-1">
+                  <option key={op.value} value={op.value} className="bg-white text-slate-900 py-1">
                     {op.label}
                   </option>
                 ))}
@@ -165,17 +165,17 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
                 {onOpenMapView && (
                   <button
                     onClick={onOpenMapView}
-                    className="group h-12 bg-white/95 hover:bg-[#946E00] text-zinc-800 hover:text-white font-bold px-3 rounded-xl text-sm flex items-center justify-center gap-1 border border-white/50 hover:border-[#946E00] transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-sm"
+                    className="group h-12 bg-white/95 hover:bg-[#0B2F64] text-slate-800 hover:text-white font-bold px-3 rounded-xl text-sm flex items-center justify-center gap-1.5 border border-white/50 hover:border-[#0B2F64] transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-sm"
                     title="Ver mapa de propiedades"
                   >
-                    <Map className="w-4 h-4 text-[#946E00] group-hover:text-white shrink-0 transition-colors" />
+                    <Map className="w-4 h-4 text-[#0B2F64] group-hover:text-white shrink-0 transition-colors" />
                     <span>Ver Mapa</span>
                   </button>
                 )}
 
                 <button
                   onClick={onSearchSubmit}
-                  className="flex-1 h-12 bg-[#946E00] hover:bg-[#7A5B00] text-white font-bold px-4 rounded-xl text-sm sm:text-base flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg transition-all cursor-pointer whitespace-nowrap"
+                  className="flex-1 h-12 bg-[#D3122A] hover:bg-[#B30E22] text-white font-bold px-4 rounded-xl text-sm sm:text-base flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg transition-all cursor-pointer whitespace-nowrap"
                 >
                   <Search className="w-4.5 h-4.5 text-white shrink-0" />
                   <span>Buscar</span>

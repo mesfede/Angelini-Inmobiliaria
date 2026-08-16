@@ -116,9 +116,9 @@ export default function App() {
   });
   const [adminEmail, setAdminEmail] = useState<string>(() => {
     try {
-      return localStorage.getItem('mef_admin_email') || 'admin@inmobiliariasilviociuffardi.com.ar';
+      return localStorage.getItem('mef_admin_email') || 'contacto@angeliniinmobiliaria.ar';
     } catch {
-      return 'admin@inmobiliariasilviociuffardi.com.ar';
+      return 'contacto@angeliniinmobiliaria.ar';
     }
   });
   const [adminLoginModalOpen, setAdminLoginModalOpen] = useState(false);
@@ -469,7 +469,7 @@ export default function App() {
   const scrollRatio = Math.min(1, scrollY / 300);
   const vintageFactor = 1 - scrollRatio;
   const grayscalePercent = Math.round(scrollRatio * 100);
-  const videoFilter = `grayscale(${grayscalePercent}%) sepia(${Math.round(18 * vintageFactor)}%) contrast(${Math.round(92 + 10 * vintageFactor)}%) brightness(${Math.round(112 + 8 * vintageFactor)}%) saturate(${Math.round(110)}%) opacity(0.82)`;
+  const videoFilter = `grayscale(${grayscalePercent}%) sepia(${Math.round(15 * vintageFactor)}%) contrast(${Math.round(95 + 8 * vintageFactor)}%) brightness(${Math.round(124 + 12 * vintageFactor)}%) saturate(${Math.round(112)}%) opacity(0.95)`;
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-800 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
@@ -498,8 +498,8 @@ export default function App() {
       {/* HERO SECTION WITH BACKGROUND DRONE VIDEO SPANNING HEADER & SEARCH */}
       <div id="hero" className={`relative z-10 bg-[#121212] text-white overflow-hidden min-h-[100dvh] flex flex-col justify-between ${isAdminLoggedIn ? 'pt-[52px]' : ''}`}>
         {/* Full-span Background Drone Video Layer */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-zinc-950">
-          {/* Silvio Ciuffardi SVG Logo Placeholder while video loads */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 bg-slate-950">
+          {/* Angelini Emblem Logo Placeholder while video loads */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-25 z-0 pointer-events-none">
             <Logo variant="light" size="xl" />
           </div>
@@ -527,8 +527,8 @@ export default function App() {
             }}
             className="absolute inset-0 w-full h-full object-cover object-top z-[1]"
           />
-          {/* Cinematic soft overlay gradient: protects top logo/header and bottom search widgets without darkening video center */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60 pointer-events-none z-[2]" />
+          {/* Cinematic soft overlay gradient: transparent at top, subtle dark vignette at bottom */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/45 pointer-events-none z-[2]" />
           <div className="absolute inset-0 bg-amber-900/10 mix-blend-soft-light pointer-events-none z-[2]" />
         </div>
 
@@ -562,7 +562,7 @@ export default function App() {
         </div>
       </div>
 
-      <main className="flex-1 relative z-0 bg-[#FBF9F4] overflow-hidden">
+      <main className="flex-1 relative z-0 bg-[#F8FAFC] overflow-hidden">
         <div className="relative z-10">
         {/* 3. MAIN PROPERTIES LISTING SECTION */}
         <section id="propiedades" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
@@ -574,15 +574,15 @@ export default function App() {
           />
 
           {/* SECTION HEADER BAR */}
-          <div id="catalogo" className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#c9b67e]/30 pb-6">
+          <div id="catalogo" className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
             <div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#85681E]"></span>
-                <span className="text-xs font-bold text-[#85681E] uppercase tracking-widest">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#D3122A]"></span>
+                <span className="text-xs font-bold text-[#D3122A] uppercase tracking-widest font-['Playfair_Display','Libre_Baskerville',Georgia,serif]">
                   Catálogo Inmobiliario
                 </span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#2C2518] mt-1 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#051329] mt-1 tracking-tight font-['Playfair_Display','Libre_Baskerville',Georgia,serif]">
                 {filters.operation === 'TODAS'
                   ? 'Todas las Propiedades'
                   : filters.operation === 'VENTA'
@@ -591,20 +591,20 @@ export default function App() {
                   ? 'Propiedades en Alquiler'
                   : 'Lotes y Terrenos Exclusivos'}
               </h2>
-              <p className="text-xs text-[#544212]/80 mt-0.5">
-                Mostrando <strong className="text-[#2C2518]">{filteredProperties.length}</strong> resultados
+              <p className="text-xs text-slate-600 mt-0.5">
+                Mostrando <strong className="text-[#051329]">{filteredProperties.length}</strong> resultados
               </p>
             </div>
 
             {/* CONTROLS: Operation Switcher, View Mode, Sort */}
             <div className="flex flex-wrap items-center gap-3">
               {/* Quick Operation Pills */}
-              <div className="bg-[#EFE6D5]/60 border border-[#c9b67e]/30 p-1.5 sm:p-2 rounded-2xl flex gap-1.5 sm:gap-2 shadow-xs">
+              <div className="bg-slate-100 border border-slate-200 p-1.5 sm:p-2 rounded-2xl flex gap-1.5 sm:gap-2 shadow-xs">
                 {(['TODAS', 'VENTA', 'ALQUILER', 'LOTES'] as const).map((op) => {
-                  let activeClass = 'bg-[#2C2518] text-white shadow-sm';
-                  if (op === 'VENTA') activeClass = 'bg-[#85681E] text-white shadow-sm';
-                  if (op === 'ALQUILER') activeClass = 'bg-[#c9b67e] text-[#2C2518] shadow-sm';
-                  if (op === 'LOTES') activeClass = 'bg-[#85681E]/15 text-[#85681E] border border-[#85681E]/40 font-extrabold shadow-xs';
+                  let activeClass = 'bg-[#051329] text-white shadow-sm';
+                  if (op === 'VENTA') activeClass = 'bg-[#02275c] text-white shadow-sm';
+                  if (op === 'ALQUILER') activeClass = 'bg-[#0284c7] text-white shadow-sm';
+                  if (op === 'LOTES') activeClass = 'bg-emerald-600 text-white shadow-sm';
 
                   return (
                     <button
@@ -613,7 +613,7 @@ export default function App() {
                       className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-extrabold transition-all cursor-pointer ${
                         filters.operation === op
                           ? activeClass
-                          : 'text-[#544212]/85 hover:text-[#2C2518] hover:bg-[#EFE6D5]/40'
+                          : 'text-slate-600 hover:text-[#0B2F64] hover:bg-white/80'
                       }`}
                     >
                       {op === 'TODAS' ? 'Todas' : op}
@@ -623,13 +623,13 @@ export default function App() {
               </div>
 
               {/* View Mode Toggle (Grid vs Map) */}
-              <div className="bg-[#EFE6D5]/65 border border-[#c9b67e]/25 p-1 rounded-xl flex gap-1">
+              <div className="bg-slate-100 border border-slate-200 p-1 rounded-xl flex gap-1">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     viewMode === 'grid'
-                      ? 'bg-white text-[#85681E] shadow-xs'
-                      : 'text-[#544212] hover:text-[#2C2518]'
+                      ? 'bg-white text-[#0B2F64] shadow-xs'
+                      : 'text-slate-600 hover:text-[#0B2F64]'
                   }`}
                   title="Vista de Cuadrícula"
                 >
@@ -637,16 +637,16 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setGoogleMapsModalOpen(true)}
-                  className="p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-[#544212] hover:text-[#85681E] hover:bg-white"
+                  className="p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-600 hover:text-[#0B2F64] hover:bg-white"
                   title="Abrir Google Maps"
                 >
-                  <Map className="w-4 h-4 text-[#85681E]" />
+                  <Map className="w-4 h-4 text-[#0B2F64]" />
                 </button>
               </div>
 
               {/* Sort By Dropdown */}
-              <div className="flex items-center gap-1.5 bg-white border border-[#c9b67e]/35 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#2C2518]">
-                <ArrowUpDown className="w-3.5 h-3.5 text-[#85681E]" />
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-800 shadow-xs">
+                <ArrowUpDown className="w-3.5 h-3.5 text-[#0B2F64]" />
                 <select
                   value={filters.sortBy}
                   onChange={(e) =>
@@ -654,7 +654,7 @@ export default function App() {
                       sortBy: e.target.value as 'recent' | 'price-asc' | 'price-desc' | 'area-desc',
                     })
                   }
-                  className="bg-transparent focus:outline-none cursor-pointer text-[#2C2518]"
+                  className="bg-transparent focus:outline-none cursor-pointer text-slate-800 font-medium"
                 >
                   <option value="recent">Más Recientes</option>
                   <option value="price-asc">Menor Precio</option>
@@ -675,7 +675,7 @@ export default function App() {
             filters.onlyRecentlyUploaded ||
             filters.amenities.length > 0) && (
             <div className="flex flex-wrap items-center gap-2 pt-2">
-              <span className="text-xs text-[#544212]/85 font-semibold">Filtros activos:</span>
+              <span className="text-xs text-slate-600 font-semibold">Filtros activos:</span>
               {filters.onlyWithVideo && (
                 <span className="text-xs bg-rose-50 text-rose-800 font-bold px-2.5 py-1 rounded-md border border-rose-200">
                   📹 Con Video Tour
@@ -687,29 +687,29 @@ export default function App() {
                 </span>
               )}
               {filters.propertyType !== 'TODOS' && (
-                <span className="text-xs bg-[#85681E]/10 text-[#85681E] font-semibold px-2.5 py-1 rounded-md border border-[#c9b67e]/35">
+                <span className="text-xs bg-slate-100 text-[#0B2F64] font-semibold px-2.5 py-1 rounded-md border border-slate-200">
                   {filters.propertyType}
                 </span>
               )}
               {filters.zone !== 'Todas las zonas' && (
-                <span className="text-xs bg-[#85681E]/10 text-[#85681E] font-semibold px-2.5 py-1 rounded-md border border-[#c9b67e]/35">
+                <span className="text-xs bg-slate-100 text-[#0B2F64] font-semibold px-2.5 py-1 rounded-md border border-slate-200">
                   {filters.zone}
                 </span>
               )}
               {filters.refCodeSearch && (
-                <span className="text-xs bg-[#85681E]/10 text-[#85681E] font-semibold px-2.5 py-1 rounded-md border border-[#c9b67e]/35">
+                <span className="text-xs bg-slate-100 text-[#0B2F64] font-semibold px-2.5 py-1 rounded-md border border-slate-200">
                   "{filters.refCodeSearch}"
                 </span>
               )}
               {filters.amenities.map((a) => (
-                <span key={a} className="text-xs bg-[#FBF9F4] text-[#85681E] font-semibold px-2.5 py-1 rounded-md border border-[#c9b67e]/25">
+                <span key={a} className="text-xs bg-slate-100 text-[#0B2F64] font-semibold px-2.5 py-1 rounded-md border border-slate-200">
                   {a}
                 </span>
               ))}
 
               <button
                 onClick={handleResetFilters}
-                className="text-xs text-[#544212]/85 hover:text-[#85681E] underline font-semibold ml-2 flex items-center gap-1 cursor-pointer"
+                className="text-xs text-slate-600 hover:text-[#D3122A] underline font-semibold ml-2 flex items-center gap-1 cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3" />
                 <span>Restablecer todo</span>
@@ -719,16 +719,16 @@ export default function App() {
 
           {/* PROPERTY DISPLAY (GRID OR MAP) */}
           {filteredProperties.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-zinc-200 p-8 space-y-5 shadow-sm max-w-2xl mx-auto my-8">
+            <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 space-y-5 shadow-sm max-w-2xl mx-auto my-8">
               <div className="w-16 h-16 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center mx-auto">
                 <AlertTriangle className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-bold text-zinc-900">
+              <h3 className="text-2xl font-bold text-slate-900">
                 {properties.length === 0
                   ? 'No hay propiedades en la base de datos'
                   : 'No encontramos la propiedad solicitada'}
               </h3>
-              <p className="text-sm text-zinc-600 max-w-md mx-auto">
+              <p className="text-sm text-slate-600 max-w-md mx-auto">
                 {properties.length === 0
                   ? 'Las propiedades de ejemplo han sido eliminadas. Puedes importar tu archivo JSON descargado directamente a Firebase Firestore o cargar propiedades nuevas.'
                   : 'Prueba ajustando los filtros de búsqueda o restableciéndolos para ver el catálogo completo.'}
@@ -736,7 +736,7 @@ export default function App() {
               <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 {properties.length === 0 ? (
                   <>
-                    <label className="px-6 py-3 bg-amber-600 text-white font-bold rounded-xl text-xs hover:bg-amber-700 transition-all cursor-pointer shadow-md inline-flex items-center gap-2">
+                    <label className="px-6 py-3 bg-[#D3122A] text-white font-bold rounded-xl text-xs hover:bg-[#B30E22] transition-all cursor-pointer shadow-md inline-flex items-center gap-2">
                       <Upload className="w-4 h-4" />
                       <span>Subir archivo JSON a Firebase</span>
                       <input
@@ -751,7 +751,7 @@ export default function App() {
                     </label>
                     <button
                       onClick={handleAdminTrigger}
-                      className="px-6 py-3 bg-[#85681E] text-white font-bold rounded-xl text-xs hover:bg-[#725816] transition-all cursor-pointer shadow-md inline-flex items-center gap-2"
+                      className="px-6 py-3 bg-[#0B2F64] text-white font-bold rounded-xl text-xs hover:bg-[#071D3F] transition-all cursor-pointer shadow-md inline-flex items-center gap-2"
                     >
                       <Plus className="w-4 h-4" />
                       <span>Cargar Propiedad Manualmente</span>
@@ -760,7 +760,7 @@ export default function App() {
                 ) : (
                   <button
                     onClick={handleResetFilters}
-                    className="px-6 py-3 bg-[#85681E] text-white font-bold rounded-xl text-xs hover:bg-[#725816] transition-all cursor-pointer shadow-md inline-flex items-center gap-2"
+                    className="px-6 py-3 bg-[#0B2F64] text-white font-bold rounded-xl text-xs hover:bg-[#071D3F] transition-all cursor-pointer shadow-md inline-flex items-center gap-2"
                   >
                     <RotateCcw className="w-4 h-4" />
                     <span>Ver todas las propiedades</span>
@@ -821,8 +821,8 @@ export default function App() {
                           onClick={() => handlePageChange(pageNum)}
                           className={`w-8 h-8 rounded-full text-xs font-black transition-all cursor-pointer flex items-center justify-center ${
                             currentPage === pageNum
-                              ? 'bg-[#85681E] text-white shadow-md scale-105'
-                              : 'bg-white border border-[#c9b67e]/20 text-[#2C2518] hover:bg-[#F4EFE6]'
+                              ? 'bg-[#0B2F64] text-white shadow-md scale-105'
+                              : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                           }`}
                         >
                           {pageNum}
@@ -833,7 +833,7 @@ export default function App() {
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs flex items-center gap-1"
+                      className="px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs flex items-center gap-1"
                     >
                       <span>Siguiente</span>
                       <ChevronRight className="w-4 h-4" />
@@ -875,7 +875,7 @@ export default function App() {
         }`}
       >
         <a
-          href="https://wa.me/5492281591989?text=Hola%20Inmobiliaria%20Silvio%20Ciuffardi,%20quisiera%20hacer%20una%20consulta."
+          href="https://wa.me/5492281301464?text=Hola%20Inmobiliaria%20Angelini,%20quisiera%20hacer%20una%20consulta."
           target="_blank"
           rel="noopener noreferrer"
           className="pointer-events-auto bg-[#25D366] hover:bg-[#1DA851] text-white p-2.5 sm:p-3 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center border border-white/80 group"
