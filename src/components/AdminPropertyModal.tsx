@@ -29,6 +29,7 @@ import {
 import { Property, OperationType, PropertyType } from '../types';
 import { ZONES_LIST } from '../data/properties';
 import { addPropertyToFirestore, updatePropertyInFirestore, saveCustomLocalProperty } from '../services/propertyService';
+import { compressImageFile } from '../lib/imageOptimizer';
 
 interface AdminPropertyModalProps {
   isOpen: boolean;
@@ -278,11 +279,44 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
     amenity.toLowerCase().includes(amenitySearchQuery.toLowerCase())
   );
 
-  // Helper to parse image URLs from textarea
+  // Compression and upload status
+  const [isCompressingImages, setIsCompressingImages] = useState(false);
+  const [compressionFeedback, setCompressionFeedback] = useState('');
+
+  // Helper to parse image URLs from textarea (URLs or compressed data URLs)
   const parsedImageUrls = imageUrlsText
     .split(/\r?\n/)
     .map((url) => url.trim())
-    .filter((url) => url.length > 5 && (url.startsWith('http://') || url.startsWith('https://')));
+    .filter((url) => url.length > 5 && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image/')));
+
+  const handleFileUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setIsCompressingImages(true);
+    setCompressionFeedback(`Optimizando y comprimiendo ${files.length} foto(s)...`);
+
+    try {
+      const compressedUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!file.type.startsWith('image/')) continue;
+        const result = await compressImageFile(file, { maxWidth: 1600, quality: 0.82 });
+        compressedUrls.push(result.dataUrl);
+      }
+
+      if (compressedUrls.length > 0) {
+        const existing = imageUrlsText.trim();
+        const combined = existing ? `${existing}\n${compressedUrls.join('\n')}` : compressedUrls.join('\n');
+        setImageUrlsText(combined);
+        setCompressionFeedback(`✓ ${compressedUrls.length} foto(s) comprimidas exitosamente a alta velocidad.`);
+        setTimeout(() => setCompressionFeedback(''), 4000);
+      }
+    } catch (err: any) {
+      console.error('Error compressing image:', err);
+      setCompressionFeedback('Hubo un inconveniente al optimizar las imágenes.');
+    } finally {
+      setIsCompressingImages(false);
+    }
+  };
 
   const handleRemoveImageByIndex = (idxToRemove: number) => {
     const remaining = parsedImageUrls.filter((_, i) => i !== idxToRemove);
@@ -699,20 +733,47 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
               </span>
             </div>
 
+            {/* Upload from Device with Compression */}
+            <div className="bg-white p-4 rounded-xl border border-dashed border-[#B08237]/60 space-y-2 text-center">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <label className="px-4 py-2.5 bg-[#041020] hover:bg-[#071D3F] text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer inline-flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-[#B08237]" />
+                  <span>{isCompressingImages ? 'Comprimiendo fotos...' : 'Subir Fotos desde Celular o PC'}</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    disabled={isCompressingImages}
+                    className="hidden"
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                  />
+                </label>
+                <span className="text-[11px] text-zinc-500 font-medium">
+                  Comprime automáticamente fotos pesadas (reduce 90% el peso sin perder calidad).
+                </span>
+              </div>
+
+              {compressionFeedback && (
+                <p className={`text-xs font-bold ${compressionFeedback.includes('✓') ? 'text-emerald-700' : 'text-[#B08237]'}`}>
+                  {compressionFeedback}
+                </p>
+              )}
+            </div>
+
             {/* Bulk URLs Textarea */}
             <div>
               <label className="block text-[11px] font-bold text-zinc-700 uppercase mb-1">
-                Pegar URLs de Fotografías (Una URL por línea) *
+                O Pegar URLs de Fotografías (Una por línea)
               </label>
               <textarea
-                rows={4}
+                rows={3}
                 value={imageUrlsText}
                 onChange={(e) => setImageUrlsText(e.target.value)}
                 placeholder={`https://images.unsplash.com/photo-1600596542815-ffad4c1539a9...\nhttps://images.unsplash.com/photo-1600585154340...`}
-                className="w-full bg-white border border-zinc-300 rounded-xl p-3 text-xs font-mono text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#946E00]"
+                className="w-full bg-white border border-zinc-300 rounded-xl p-3 text-xs font-mono text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#B08237]"
               />
               <p className="text-[11px] text-zinc-500 mt-1 flex items-center gap-1">
-                <HelpCircle className="w-3.5 h-3.5 text-[#946E00]" />
+                <HelpCircle className="w-3.5 h-3.5 text-[#B08237]" />
                 <span>
                   Haga clic en <strong>"⭐ Elegir como Principal"</strong> en la foto que desea mostrar en la portada principal de la propiedad.
                 </span>

@@ -30,6 +30,8 @@ import { AdminBar } from './components/AdminBar';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { AdminPropertyModal } from './components/AdminPropertyModal';
 import { SEOHead } from './components/SEOHead';
+import { Preloader } from './components/Preloader';
+import { preloadImages } from './lib/imageOptimizer';
 import { MAP_BG_DATA_URL } from './assets/mapBgData';
 
 export default function App() {
@@ -143,15 +145,27 @@ export default function App() {
   const [googleMapsModalOpen, setGoogleMapsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
 
-  // Realtime subscription to Firebase Firestore
+  // Realtime subscription to Firebase Firestore with Image Preloading
   useEffect(() => {
     const unsubscribe = subscribeToProperties(
-      (liveProperties, fromFirebase) => {
+      async (liveProperties, fromFirebase) => {
         setProperties(liveProperties);
         setIsFirebaseConnected(fromFirebase);
         if (fromFirebase) {
           setFirebaseError(null);
         }
+
+        // Preload the first batch of property images in background for instant display
+        if (liveProperties && liveProperties.length > 0) {
+          const criticalImageUrls: string[] = [];
+          liveProperties.slice(0, 6).forEach((p) => {
+            if (p.images && p.images[0]) {
+              criticalImageUrls.push(p.images[0]);
+            }
+          });
+          await preloadImages(criticalImageUrls, 1200);
+        }
+
         setIsInitialLoading(false);
       },
       (error) => {
@@ -164,7 +178,7 @@ export default function App() {
 
     const fallbackTimer = setTimeout(() => {
       setIsInitialLoading(false);
-    }, 1500);
+    }, 2500);
 
     return () => {
       unsubscribe();
@@ -484,33 +498,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-800 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
-      {/* INITIAL LOADING SPLASH SCREEN */}
-      <AnimatePresence>
-        {isInitialLoading && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: 'easeInOut' }}
-            className="fixed inset-0 z-200 bg-white flex flex-col items-center justify-center p-6 select-none"
-          >
-            <div className="flex flex-col items-center justify-center space-y-6 text-center">
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Logo variant="dark" size="lg" />
-              </motion.div>
-              <div className="flex flex-col items-center space-y-3">
-                <div className="w-8 h-8 border-3 border-[#0B2F64] border-t-transparent rounded-full animate-spin" />
-                <p className="text-xs font-bold tracking-[0.2em] text-zinc-600 uppercase">
-                  Cargando propiedades...
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* LUXURIOUS INSTITUTIONAL PRELOADER */}
+      <Preloader isLoading={isInitialLoading} minDisplayTimeMs={1100} />
 
       {/* Dynamic SEO & Head Tags Manager */}
       <SEOHead
@@ -757,7 +746,23 @@ export default function App() {
           )}
 
           {/* PROPERTY DISPLAY (GRID OR MAP) */}
-          {filteredProperties.length === 0 ? (
+          {isInitialLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {[1, 2, 3, 4, 5, 6].map((idx) => (
+                <div key={idx} className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm p-4 space-y-4 animate-pulse">
+                  <div className="aspect-4/3 bg-slate-200 rounded-xl" />
+                  <div className="space-y-2">
+                    <div className="h-5 bg-slate-200 rounded-md w-3/4" />
+                    <div className="h-4 bg-slate-100 rounded-md w-1/2" />
+                  </div>
+                  <div className="flex justify-between pt-2 border-t border-slate-100">
+                    <div className="h-4 bg-slate-200 rounded-md w-1/4" />
+                    <div className="h-4 bg-slate-200 rounded-md w-1/4" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredProperties.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 space-y-5 shadow-sm max-w-2xl mx-auto my-8">
               <div className="w-16 h-16 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center mx-auto">
                 <AlertTriangle className="w-8 h-8" />
@@ -775,8 +780,8 @@ export default function App() {
               <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 {properties.length === 0 ? (
                   <>
-                    <label className="px-6 py-3 bg-[#D3122A] text-white font-bold rounded-xl text-xs hover:bg-[#B30E22] transition-all cursor-pointer shadow-md inline-flex items-center gap-2">
-                      <Upload className="w-4 h-4" />
+                    <label className="px-6 py-3 bg-[#041020] text-white font-bold rounded-xl text-xs hover:bg-[#071D3F] transition-all cursor-pointer shadow-md inline-flex items-center gap-2">
+                      <Upload className="w-4 h-4 text-[#B08237]" />
                       <span>Subir archivo JSON a Firebase</span>
                       <input
                         type="file"
@@ -790,7 +795,7 @@ export default function App() {
                     </label>
                     <button
                       onClick={handleAdminTrigger}
-                      className="px-6 py-3 bg-[#0B2F64] text-white font-bold rounded-xl text-xs hover:bg-[#071D3F] transition-all cursor-pointer shadow-md inline-flex items-center gap-2"
+                      className="px-6 py-3 bg-[#B08237] hover:bg-[#8F6626] text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-md inline-flex items-center gap-2"
                     >
                       <Plus className="w-4 h-4" />
                       <span>Cargar Propiedad Manualmente</span>
@@ -799,9 +804,9 @@ export default function App() {
                 ) : (
                   <button
                     onClick={handleResetFilters}
-                    className="px-6 py-3 bg-[#0B2F64] text-white font-bold rounded-xl text-xs hover:bg-[#071D3F] transition-all cursor-pointer shadow-md inline-flex items-center gap-2"
+                    className="px-6 py-3 bg-[#041020] hover:bg-[#071D3F] text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-md inline-flex items-center gap-2"
                   >
-                    <RotateCcw className="w-4 h-4" />
+                    <RotateCcw className="w-4 h-4 text-[#B08237]" />
                     <span>Ver todas las propiedades</span>
                   </button>
                 )}

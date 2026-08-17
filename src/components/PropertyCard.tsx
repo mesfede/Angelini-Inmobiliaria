@@ -104,6 +104,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         <img
           src={property.images?.[currentImageIndex] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'}
           alt={property.title}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover scale-[1.05] origin-center group-hover:scale-[1.09] transition-transform duration-500 pointer-events-none"
           onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'; }}
         />

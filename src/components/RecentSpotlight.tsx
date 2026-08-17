@@ -72,6 +72,8 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
           <img
             src={spotlightProperty.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'}
             alt={spotlightProperty.title}
+            loading="eager"
+            decoding="async"
             className="absolute inset-0 w-full h-full object-cover scale-[1.05] origin-center group-hover/img:scale-[1.09] transition-transform duration-700 brightness-[1.03] contrast-[1.02] saturate-[1.06]"
             onError={(e) => {
               if (e.currentTarget.dataset.hasError) return;

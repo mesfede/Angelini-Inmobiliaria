@@ -188,6 +188,8 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                 <img
                   src={currentPhotoUrl || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'}
                   alt={property.title}
+                  loading="eager"
+                  decoding="async"
                   className="w-full h-full object-cover scale-[1.05] origin-center transition-all duration-300 group-hover:scale-[1.07]"
                   onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'; }}
                 />
