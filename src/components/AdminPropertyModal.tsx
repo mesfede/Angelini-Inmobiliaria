@@ -972,25 +972,21 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
               )}
             </div>
 
-            {/* Bulk URLs Textarea */}
-            <div>
-              <label className="block text-[11px] font-bold text-zinc-700 uppercase mb-1">
-                O Pegar URLs de Fotografías (Una por línea)
-              </label>
-              <textarea
-                rows={3}
-                value={imageUrlsText}
-                onChange={(e) => setImageUrlsText(e.target.value)}
-                placeholder={`https://images.unsplash.com/photo-1600596542815-ffad4c1539a9...\nhttps://images.unsplash.com/photo-1600585154340...`}
-                className="w-full bg-white border border-zinc-300 rounded-xl p-3 text-xs font-mono text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#B08237]"
-              />
-              <p className="text-[11px] text-zinc-500 mt-1 flex items-center gap-1">
-                <HelpCircle className="w-3.5 h-3.5 text-[#B08237]" />
-                <span>
-                  Haga clic en <strong>"⭐ Elegir como Principal"</strong> en la foto que desea mostrar en la portada principal de la propiedad.
-                </span>
-              </p>
-            </div>
+            {/* Optional Bulk URLs Section */}
+            <details className="text-xs text-zinc-500">
+              <summary className="cursor-pointer font-bold text-[#B08237] hover:underline mb-2 select-none">
+                🔗 ¿Desea pegar enlaces web directos en vez de subir fotos? (Opcional)
+              </summary>
+              <div className="pt-2 space-y-1">
+                <textarea
+                  rows={2}
+                  value={imageUrlsText}
+                  onChange={(e) => setImageUrlsText(e.target.value)}
+                  placeholder="https://ejemplo.com/foto1.jpg&#10;https://ejemplo.com/foto2.jpg"
+                  className="w-full bg-white border border-zinc-300 rounded-xl p-2.5 text-xs font-mono text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#B08237]"
+                />
+              </div>
+            </details>
 
             {/* VISUAL GALLERY THUMBNAILS WITH MAIN PHOTO SELECTOR */}
             {parsedImageUrls.length > 0 && (
