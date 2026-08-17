@@ -1,3 +1,8 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { X, MapPin, Maximize, Bed, Bath, Car, Phone, Mail, CheckCircle2, ChevronLeft, ChevronRight, Share2, Heart, Trees, Video, ExternalLink, Star, FileText, Plus, Minus, Home, Flame, Instagram } from 'lucide-react';
+import { Property } from '../types';
+import { getAssetUrl, formatLocationName, formatFullAddress, formatPropertyTitle } from '../lib/utils';
+import { Logo } from './Logo';
 
 const getInstagramEmbedUrl = (url?: string): string | null => {
   if (!url) return null;
@@ -17,12 +22,6 @@ const getYouTubeEmbedUrl = (url?: string): string | null => {
   }
   return null;
 };
-import React, { useState, useRef, useEffect } from 'react';
-import { X, MapPin, Maximize, Bed, Bath, Car, Phone, Mail, CheckCircle2, ChevronLeft, ChevronRight, Share2, Heart, Trees, Video, ExternalLink, Star, FileText, Plus, Minus, Home, Flame, Instagram } from 'lucide-react';
-import { Property } from '../types';
-import { getAssetUrl, formatLocationName, formatFullAddress, formatPropertyTitle } from '../lib/utils';
-import { Logo } from './Logo';
-
 
 interface PropertyDetailModalProps {
   property: Property | null;
@@ -108,25 +107,25 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
   const getOperationBadgeColor = (op?: string) => {
     switch (op) {
       case 'VENTA':
-        return 'bg-[#02275c] text-white shadow-xs';
+        return 'bg-[#041020] text-white shadow-xs';
       case 'ALQUILER':
       case 'ALQUILER TEMPORAL':
-        return 'bg-[#0284c7] text-white shadow-xs';
+        return 'bg-[#B08237] text-white shadow-xs';
       case 'LOTES':
       case 'LOTEO':
-        return 'bg-emerald-600 text-white shadow-xs';
+        return 'bg-emerald-700 text-white shadow-xs';
       default:
-        return 'bg-[#02275c] text-white shadow-xs';
+        return 'bg-[#041020] text-white shadow-xs';
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 lg:p-5 animate-fadeIn">
-      <div className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh] border border-slate-200">
+      <div className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh] border border-[#dbdad8]">
         {/* TOP MODAL HEADER */}
-        <div className="bg-gradient-to-r from-[#071D3F] via-[#0B2F64] to-[#051329] text-white px-4 py-3 sm:px-6 flex items-center justify-between border-b border-white/15 shrink-0">
+        <div className="bg-gradient-to-r from-[#041020] via-[#041020] to-[#020912] text-white px-4 py-3 sm:px-6 flex items-center justify-between border-b border-white/15 shrink-0">
           <div className="flex items-center gap-3">
-            <Logo variant="dark" size="md" />
+            <Logo variant="scrolled" size="md" />
           </div>
 
           <div className="flex items-center gap-2">
@@ -148,7 +147,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
               className="p-2 rounded-full hover:bg-white/10 text-white transition-colors cursor-pointer"
               title="Guardar en favoritos"
             >
-              <Heart className={`w-5 h-5 ${isFavorite ? 'fill-[#D3122A] text-[#D3122A]' : 'text-white'}`} />
+              <Heart className={`w-5 h-5 ${isFavorite ? 'fill-[#B08237] text-[#B08237]' : 'text-white'}`} />
             </button>
 
             <div className="relative">
@@ -160,7 +159,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                 <Share2 className="w-5 h-5" />
               </button>
               {copiedLink && (
-                <div className="absolute top-full right-0 mt-1 bg-[#051329] text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-lg whitespace-nowrap z-50 animate-fadeIn border border-white/20">
+                <div className="absolute top-full right-0 mt-1 bg-[#041020] text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-lg whitespace-nowrap z-50 animate-fadeIn border border-[#B08237]/40">
                   ¡Enlace copiado!
                 </div>
               )}
@@ -183,7 +182,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
             <div className="lg:col-span-7 flex flex-col justify-between space-y-3">
               <div
                 onDoubleClick={() => setZoomImage(currentPhotoUrl)}
-                className="relative aspect-4/3 sm:aspect-4/3 lg:aspect-4/3 min-h-[280px] sm:min-h-[340px] lg:min-h-[380px] w-full rounded-2xl overflow-hidden bg-zinc-900 group shadow-md border border-slate-200 cursor-zoom-in"
+                className="relative aspect-4/3 sm:aspect-4/3 lg:aspect-4/3 min-h-[280px] sm:min-h-[340px] lg:min-h-[380px] w-full rounded-2xl overflow-hidden bg-zinc-900 group shadow-md border border-[#dbdad8] cursor-zoom-in"
                 title="Haga doble clic para ampliar a pantalla completa"
               >
                 <img
@@ -193,29 +192,29 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                   onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'; }}
                 />
 
-                {/* Angelini Inmobiliaria Official Watermark Logo (Original emblem colors with white text) */}
+                {/* Angelini Inmobiliaria Official Watermark Logo */}
                 <div className="absolute bottom-3 right-3 pointer-events-none z-10 opacity-35 drop-shadow-sm">
-                  <Logo variant="dark" size="sm" className="scale-90 origin-bottom-right" />
+                  <Logo variant="scrolled" size="sm" className="scale-90 origin-bottom-right" />
                 </div>
 
                 {/* Center Side-to-Side Status Banner */}
                 {property.statusBanner && property.statusBanner !== 'NINGUNA' && (
                   <div className={`absolute inset-x-0 top-1/2 -translate-y-1/2 z-25 py-4 sm:py-5 px-6 text-center font-black text-lg sm:text-2xl uppercase tracking-widest pointer-events-none transition-all shadow-2xl ${
                     property.statusBanner.toLowerCase().includes('vendida')
-                      ? 'bg-[#D3122A]/95 text-white border-y-2 border-white/40'
+                      ? 'bg-[#B08237]/95 text-white border-y-2 border-white/40'
                       : property.statusBanner.toLowerCase().includes('reservada')
-                      ? 'bg-[#0B2F64]/95 text-white border-y-2 border-[#D3122A]'
-                      : 'bg-[#071D3F]/95 text-white border-y-2 border-white/30'
+                      ? 'bg-[#041020]/95 text-white border-y-2 border-[#B08237]'
+                      : 'bg-[#041020]/95 text-white border-y-2 border-white/30'
                   }`}>
-                    <span className="text-[#D3122A] mr-3">●</span>
+                    <span className="text-[#B08237] mr-3">●</span>
                     {property.statusBanner}
-                    <span className="text-[#D3122A] ml-3">●</span>
+                    <span className="text-[#B08237] ml-3">●</span>
                   </div>
                 )}
 
                 {/* Double click instruction overlay badge */}
                 <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm opacity-90 group-hover:opacity-100 transition-opacity">
-                  <Maximize className="w-3 h-3 text-[#D3122A]" />
+                  <Maximize className="w-3 h-3 text-[#B08237]" />
                   <span>Doble clic para ampliar</span>
                 </div>
 
@@ -225,13 +224,13 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                     {property.operation}
                   </span>
                   {property.featured && (
-                    <span className="bg-[#A8772C] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-md border border-white/20">
+                    <span className="bg-[#B08237] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-md border border-white/20">
                       <Home className="w-3.5 h-3.5 text-white shrink-0" />
                       <span>Propiedad destacada</span>
                     </span>
                   )}
                   {property.isRecentlyUploaded && (
-                    <span className="bg-orange-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-md border border-white/20">
+                    <span className="bg-amber-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-md border border-white/20">
                       <Flame className="w-3.5 h-3.5 fill-white text-white shrink-0" />
                       <span>Recién subida</span>
                     </span>
@@ -261,84 +260,65 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setActiveImageIndex((prev) => (prev + 1) % property.images.length);
+                        setActiveImageIndex(
+                          (prev) => (prev + 1) % property.images.length
+                        );
                       }}
                       className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 hover:bg-black/80 text-white transition-all cursor-pointer shadow-md"
-                      title="Siguiente foto"
+                      title="Foto siguiente"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
-
-                    <div className="absolute bottom-3 right-3 bg-black/75 text-white text-[11px] font-bold px-2.5 py-1 rounded-md backdrop-blur-xs">
-                      {activeImageIndex + 1} / {property.images.length}
-                    </div>
                   </>
                 )}
               </div>
 
-              {/* Thumbnail selector strip with navigation arrows */}
+              {/* Thumbnails Row */}
               {property.images.length > 1 && (
-                <div className="relative flex items-center gap-1.5 mt-2">
-                  {property.images.length > 4 && (
-                    <button
-                      type="button"
-                      onClick={() => scrollThumbnails('left')}
-                      className="p-1 rounded-lg bg-zinc-800 text-white hover:bg-black transition-colors shrink-0 cursor-pointer shadow-xs"
-                      title="Fotos anteriores"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-
+                <div className="relative flex items-center">
+                  <button
+                    onClick={() => scrollThumbnails('left')}
+                    className="p-1.5 rounded-lg bg-[#dbdad8]/50 hover:bg-[#dbdad8] text-[#041020] transition-colors mr-1 cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
                   <div
                     ref={thumbnailRef}
-                    className="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth flex-1 items-center"
+                    className="flex gap-2 overflow-x-auto no-scrollbar py-1"
                   >
                     {property.images.map((img, idx) => (
                       <button
                         key={idx}
                         onClick={() => setActiveImageIndex(idx)}
-                        onDoubleClick={() => setZoomImage(img)}
-                        className={`relative w-16 h-16 sm:w-20 sm:h-20 aspect-square rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                        className={`relative shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
                           idx === activeImageIndex
-                            ? 'border-[#0B2F64] scale-102 shadow-md ring-2 ring-[#0B2F64]/30'
-                            : 'border-transparent opacity-60 hover:opacity-100'
+                            ? 'border-[#B08237] scale-105 shadow-md'
+                            : 'border-[#dbdad8] opacity-70 hover:opacity-100'
                         }`}
-                        title={`Foto ${idx + 1}`}
                       >
                         <img
                           src={img}
-                          alt={`Foto ${idx + 1}`}
+                          alt={`${property.title} miniatura ${idx + 1}`}
                           className="w-full h-full object-cover"
-                          onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'; }}
                         />
-                        <span className="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] font-bold px-1 rounded">
-                          {idx + 1}
-                        </span>
                       </button>
                     ))}
                   </div>
-
-                  {property.images.length > 4 && (
-                    <button
-                      type="button"
-                      onClick={() => scrollThumbnails('right')}
-                      className="p-1 rounded-lg bg-zinc-800 text-white hover:bg-black transition-colors shrink-0 cursor-pointer shadow-xs"
-                      title="Siguientes fotos"
-                    >
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  )}
+                  <button
+                    onClick={() => scrollThumbnails('right')}
+                    className="p-1.5 rounded-lg bg-[#dbdad8]/50 hover:bg-[#dbdad8] text-[#041020] transition-colors ml-1 cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 </div>
               )}
             </div>
 
-            {/* RIGHT COLUMN: ESSENTIAL INFO (TITLE, PRICE, SPECS & ACTIONS) */}
-            <div className="lg:col-span-5 flex flex-col justify-between bg-slate-50 p-4 rounded-2xl border border-slate-200 gap-3">
-              <div className="space-y-2.5">
-                {/* Category & Zone */}
+            {/* RIGHT COLUMN: PROPERTY INFO SUMMARY */}
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-4 bg-[#dbdad8]/15 p-4 rounded-2xl border border-[#dbdad8]">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#0B2F64] uppercase tracking-wider">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#B08237] uppercase tracking-wider">
                     <span>{property.type}</span>
                     <span className="text-zinc-400 font-normal">/</span>
                     <span>{formatLocationName(property.location.zone, property.location.city)}</span>
@@ -346,25 +326,25 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                 </div>
 
                 {/* Main Title */}
-                <h2 className="text-lg sm:text-xl font-extrabold text-[#051329] leading-snug font-['Playfair_Display','Libre_Baskerville',Georgia,serif]">
+                <h2 className="text-lg sm:text-xl font-extrabold text-[#041020] leading-snug font-['Playfair_Display','Libre_Baskerville',Georgia,serif]">
                   {formatPropertyTitle(property.title)}
                 </h2>
 
                 {/* Address */}
                 <p className="text-xs text-slate-600 flex items-center gap-1.5 font-medium">
-                  <MapPin className="w-3.5 h-3.5 text-[#D3122A] shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 text-[#B08237] shrink-0" />
                   <span>
                     {formatFullAddress(property.location.address, property.location.zone, property.location.city)}
                   </span>
                 </p>
 
                 {/* Price Display */}
-                <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs">
+                <div className="bg-white p-3.5 rounded-xl border border-[#dbdad8] shadow-xs">
                   <span className="text-[9px] text-slate-500 font-bold uppercase block tracking-wider">
                     Precio
                   </span>
                   <div className="flex items-baseline justify-between gap-2 mt-0.5">
-                    <span className={`text-xl sm:text-2xl font-black ${displayPrice() === 'Consultar' ? 'text-[#0B2F64]' : 'text-[#051329]'}`}>
+                    <span className={`text-xl sm:text-2xl font-black ${displayPrice() === 'Consultar' ? 'text-[#B08237]' : 'text-[#041020]'}`}>
                       {displayPrice()}
                     </span>
                   </div>
@@ -377,47 +357,47 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
 
                 {/* 2x2 SPECS GRID */}
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-white p-2.5 rounded-xl border border-slate-200 flex items-center gap-2">
-                    <div className="p-1.5 bg-[#0B2F64]/10 text-[#0B2F64] rounded-lg">
+                  <div className="bg-white p-2.5 rounded-xl border border-[#dbdad8] flex items-center gap-2">
+                    <div className="p-1.5 bg-[#B08237]/10 text-[#B08237] rounded-lg">
                       <Maximize className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <span className="text-[8px] text-slate-500 font-bold uppercase block">Superficie</span>
-                      <span className="text-xs font-bold text-[#051329]">{property.coveredArea} m² cub.</span>
+                      <span className="text-xs font-bold text-[#041020]">{property.coveredArea} m² cub.</span>
                     </div>
                   </div>
 
-                  <div className="bg-white p-2.5 rounded-xl border border-slate-200 flex items-center gap-2">
-                    <div className="p-1.5 bg-[#0B2F64]/10 text-[#0B2F64] rounded-lg">
+                  <div className="bg-white p-2.5 rounded-xl border border-[#dbdad8] flex items-center gap-2">
+                    <div className="p-1.5 bg-[#B08237]/10 text-[#B08237] rounded-lg">
                       <Bed className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <span className="text-[8px] text-slate-500 font-bold uppercase block">Dormitorios</span>
-                      <span className="text-xs font-bold text-[#051329]">
+                      <span className="text-xs font-bold text-[#041020]">
                         {property.bedrooms > 0 ? `${property.bedrooms} dorm.` : 'N/A'}
                       </span>
                     </div>
                   </div>
 
-                  <div className="bg-white p-2.5 rounded-xl border border-slate-200 flex items-center gap-2">
-                    <div className="p-1.5 bg-[#0B2F64]/10 text-[#0B2F64] rounded-lg">
+                  <div className="bg-white p-2.5 rounded-xl border border-[#dbdad8] flex items-center gap-2">
+                    <div className="p-1.5 bg-[#B08237]/10 text-[#B08237] rounded-lg">
                       <Bath className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <span className="text-[8px] text-slate-500 font-bold uppercase block">Baños</span>
-                      <span className="text-xs font-bold text-[#051329]">
+                      <span className="text-xs font-bold text-[#041020]">
                         {property.bathrooms > 0 ? `${property.bathrooms} baños` : 'N/A'}
                       </span>
                     </div>
                   </div>
 
-                  <div className="bg-white p-2.5 rounded-xl border border-slate-200 flex items-center gap-2">
-                    <div className="p-1.5 bg-[#0B2F64]/10 text-[#0B2F64] rounded-lg">
+                  <div className="bg-white p-2.5 rounded-xl border border-[#dbdad8] flex items-center gap-2">
+                    <div className="p-1.5 bg-[#B08237]/10 text-[#B08237] rounded-lg">
                       <Car className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <span className="text-[8px] text-slate-500 font-bold uppercase block">Cocheras</span>
-                      <span className="text-xs font-bold text-[#051329]">
+                      <span className="text-xs font-bold text-[#041020]">
                         {property.garages > 0 ? `${property.garages} coch.` : 'Sin coch.'}
                       </span>
                     </div>
@@ -426,12 +406,12 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
               </div>
 
               {/* QUICK ACTION BUTTON */}
-              <div className="space-y-1.5 pt-1 border-t border-slate-200">
+              <div className="space-y-1.5 pt-1 border-t border-[#dbdad8]">
                 <a
                   href={`https://wa.me/5492281301464?text=Hola%20Inmobiliaria%20Angelini,%20quiero%20consultar%20por%20la%20propiedad%20${encodeURIComponent(property.title)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-[#D3122A] hover:bg-[#B30E22] text-white py-3 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md hover:shadow-[#D3122A]/30"
+                  className="w-full bg-[#B08237] hover:bg-[#9A702D] text-white py-3 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md hover:shadow-[#B08237]/30 border border-white/20"
                 >
                   <Phone className="w-4 h-4" />
                   <span>Consultar por WhatsApp</span>
@@ -441,13 +421,13 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
           </div>
 
           {/* TAB NAVIGATION */}
-          <div className="border-b border-slate-200 flex flex-wrap gap-2 sm:gap-4">
+          <div className="border-b border-[#dbdad8] flex flex-wrap gap-2 sm:gap-4">
             <button
               onClick={() => setActiveTab('info')}
               className={`pb-3 text-sm font-bold transition-all border-b-2 cursor-pointer ${
                 activeTab === 'info'
-                  ? 'border-[#0B2F64] text-[#0B2F64]'
-                  : 'border-transparent text-slate-600 hover:text-[#051329]'
+                  ? 'border-[#B08237] text-[#041020]'
+                  : 'border-transparent text-slate-500 hover:text-[#041020]'
               }`}
             >
               Descripción
@@ -456,22 +436,22 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
               onClick={() => setActiveTab('video')}
               className={`pb-3 text-sm font-bold transition-all border-b-2 cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'video'
-                  ? 'border-[#0B2F64] text-[#0B2F64]'
-                  : 'border-transparent text-slate-600 hover:text-[#051329]'
+                  ? 'border-[#B08237] text-[#041020]'
+                  : 'border-transparent text-slate-500 hover:text-[#041020]'
               }`}
             >
-              <Video className="w-4 h-4 text-[#D3122A]" />
+              <Video className="w-4 h-4 text-[#B08237]" />
               <span>Video Tour / IG</span>
               {(property.videoUrl || property.instagramUrl) && (
-                <span className="w-2 h-2 rounded-full bg-[#D3122A] animate-ping"></span>
+                <span className="w-2 h-2 rounded-full bg-[#B08237] animate-ping"></span>
               )}
             </button>
             <button
               onClick={() => setActiveTab('amenities')}
               className={`pb-3 text-sm font-bold transition-all border-b-2 cursor-pointer ${
                 activeTab === 'amenities'
-                  ? 'border-[#0B2F64] text-[#0B2F64]'
-                  : 'border-transparent text-slate-600 hover:text-[#051329]'
+                  ? 'border-[#B08237] text-[#041020]'
+                  : 'border-transparent text-slate-500 hover:text-[#041020]'
               }`}
             >
               Amenities
@@ -480,93 +460,42 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
               onClick={() => setActiveTab('location')}
               className={`pb-3 text-sm font-bold transition-all border-b-2 cursor-pointer ${
                 activeTab === 'location'
-                  ? 'border-[#0B2F64] text-[#0B2F64]'
-                  : 'border-transparent text-slate-600 hover:text-[#051329]'
+                  ? 'border-[#B08237] text-[#041020]'
+                  : 'border-transparent text-slate-500 hover:text-[#041020]'
               }`}
             >
               Ubicación
             </button>
           </div>
 
-          {/* TAB CONTENT */}
+          {/* TAB CONTENTS */}
           {activeTab === 'video' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-zinc-900 flex items-center gap-2">
-                    <Video className="w-5 h-5 text-[#D3122A]" />
-                    <span>Video Tour de la Propiedad</span>
-                  </h3>
-                  <p className="text-xs text-zinc-500">
-                    Recorrido audiovisual publicado por Inmobiliaria Angelini
-                  </p>
-                </div>
-
-                {property.instagramUrl && (
-                  <a
-                    href={property.instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-opacity"
-                  >
-                    <span>Ver Reel en Instagram</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                )}
-              </div>
-
               {(() => {
-                const videoOrIgUrl = property.instagramUrl || property.videoUrl;
-                const igEmbedUrl = getInstagramEmbedUrl(videoOrIgUrl);
-                const ytEmbedUrl = getYouTubeEmbedUrl(property.videoUrl);
+                const igUrl = getInstagramEmbedUrl(property.instagramUrl || property.videoUrl);
+                const ytUrl = getYouTubeEmbedUrl(property.videoUrl);
 
-                if (igEmbedUrl) {
+                if (igUrl) {
                   return (
-                    <div className="flex flex-col items-center justify-center py-2">
-                      <div className="relative w-full max-w-[380px] h-[580px] sm:h-[620px] rounded-2xl overflow-hidden bg-black shadow-2xl border border-zinc-800 flex items-center justify-center mx-auto">
-                        <iframe
-                          src={igEmbedUrl}
-                          className="w-full h-full border-0 rounded-2xl"
-                          scrolling="no"
-                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                          allowFullScreen
-                          title="Instagram Reel / Video"
-                        />
-                      </div>
-                      <p className="text-[11px] text-zinc-400 mt-2 text-center">
-                        Visualización en formato vertical de Instagram. Si tenés problemas para reproducir, usá el botón "Ver Reel en Instagram".
-                      </p>
-                    </div>
-                  );
-                }
-
-                if (ytEmbedUrl) {
-                  return (
-                    <div className="relative rounded-2xl overflow-hidden bg-black aspect-16/9 shadow-lg border border-zinc-800">
+                    <div className="max-w-md mx-auto aspect-9/16 sm:aspect-4/5 w-full bg-black rounded-2xl overflow-hidden shadow-lg border border-[#dbdad8]">
                       <iframe
-                        src={ytEmbedUrl}
+                        src={igUrl}
                         className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        title="YouTube Video"
+                        allowTransparency
+                        allow="encrypted-media"
                       />
                     </div>
                   );
                 }
 
-                if (property.videoUrl) {
+                if (ytUrl) {
                   return (
-                    <div className="relative rounded-2xl overflow-hidden bg-black aspect-16/9 shadow-lg border border-zinc-800">
-                      <video
-                        src={getAssetUrl(property.videoUrl)}
-                        controls
-                        autoPlay
-                        loop
-                        playsInline
-                        onError={() => {
-                          console.warn('Property video failed to load or play');
-                        }}
-                        className="w-full h-full object-cover scale-[1.08] origin-center"
+                    <div className="aspect-video w-full max-w-2xl mx-auto bg-black rounded-2xl overflow-hidden shadow-lg border border-[#dbdad8]">
+                      <iframe
+                        src={ytUrl}
+                        className="w-full h-full border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
                       />
                     </div>
                   );
@@ -574,9 +503,9 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
 
                 return null;
               })() || (
-                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center space-y-3">
-                  <Video className="w-10 h-10 text-slate-400 mx-auto" />
-                  <h4 className="font-bold text-[#051329] text-sm">Video individual en edición</h4>
+                <div className="bg-[#dbdad8]/20 border border-[#dbdad8] rounded-2xl p-8 text-center space-y-3">
+                  <Video className="w-10 h-10 text-[#B08237] mx-auto" />
+                  <h4 className="font-bold text-[#041020] text-sm">Video individual en edición</h4>
                   <p className="text-xs text-slate-500 max-w-md mx-auto">
                     Podés solicitar el video completo del recorrido directo a nuestro WhatsApp o ver nuestros Reels actualizados en Instagram.
                   </p>
@@ -584,7 +513,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                     href={`https://wa.me/5492281301464?text=Hola%20Inmobiliaria%20Angelini,%20quisiera%20solicitar%20el%20video%20de%20la%20propiedad%20${encodeURIComponent(property.title)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#D3122A] hover:bg-[#B30E22] text-white rounded-xl text-xs font-bold shadow-sm"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#B08237] hover:bg-[#9A702D] text-white rounded-xl text-xs font-bold shadow-sm border border-white/20"
                   >
                     <span>Pedir Video por WhatsApp</span>
                     <Phone className="w-3.5 h-3.5" />
@@ -595,22 +524,22 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
           )}
           {activeTab === 'info' && (
             <div className="space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#dbdad8] pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 bg-[#0B2F64]/10 rounded-xl text-[#0B2F64]">
+                  <div className="p-2 bg-[#B08237]/10 rounded-xl text-[#B08237]">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-[#051329]">Descripción & Detalles</h3>
+                    <h3 className="text-base font-bold text-[#041020]">Descripción & Detalles</h3>
                     <p className="text-xs text-slate-500 font-medium">Información completa de la propiedad</p>
                   </div>
                 </div>
               </div>
 
               {/* Main Description Box with stylish accent filete */}
-              <div className="bg-white border-l-4 border-l-[#D3122A] border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-xs space-y-3">
+              <div className="bg-white border-l-4 border-l-[#B08237] border border-[#dbdad8] rounded-2xl p-5 sm:p-6 shadow-xs space-y-3">
                 {property.description.split('\n\n').map((paragraph, pIdx) => (
-                  <p key={pIdx} className="text-sm text-[#051329]/90 leading-relaxed font-normal">
+                  <p key={pIdx} className="text-sm text-[#041020]/90 leading-relaxed font-normal">
                     {paragraph}
                   </p>
                 ))}
@@ -618,32 +547,32 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
 
               {/* LOTE SPECIFIC FEATURES IF APPLICABLE */}
               {property.lotFeatures && (
-                <div className="bg-slate-50 border border-slate-200 p-4.5 rounded-2xl space-y-2.5 text-xs">
-                  <h4 className="font-bold text-[#051329] flex items-center gap-1.5 text-sm">
-                    <Trees className="w-4 h-4 text-[#0B2F64]" />
+                <div className="bg-[#dbdad8]/20 border border-[#dbdad8] p-4.5 rounded-2xl space-y-2.5 text-xs">
+                  <h4 className="font-bold text-[#041020] flex items-center gap-1.5 text-sm">
+                    <Trees className="w-4 h-4 text-[#B08237]" />
                     <span>Datos Técnicos del Lote</span>
                   </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[#051329] font-medium">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[#041020] font-medium">
                     {property.lotFeatures.frontageMeters && (
-                      <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                      <div className="bg-white p-2.5 rounded-xl border border-[#dbdad8] shadow-2xs">
                         <span className="text-[10px] text-slate-500 font-bold uppercase block">Frente</span>
-                        <strong className="text-xs text-[#051329]">{property.lotFeatures.frontageMeters} metros</strong>
+                        <strong className="text-xs text-[#041020]">{property.lotFeatures.frontageMeters} metros</strong>
                       </div>
                     )}
                     {property.lotFeatures.depthMeters && (
-                      <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                      <div className="bg-white p-2.5 rounded-xl border border-[#dbdad8] shadow-2xs">
                         <span className="text-[10px] text-slate-500 font-bold uppercase block">Fondo</span>
-                        <strong className="text-xs text-[#051329]">{property.lotFeatures.depthMeters} metros</strong>
+                        <strong className="text-xs text-[#041020]">{property.lotFeatures.depthMeters} metros</strong>
                       </div>
                     )}
-                    <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <div className="bg-white p-2.5 rounded-xl border border-[#dbdad8] shadow-2xs">
                       <span className="text-[10px] text-slate-500 font-bold uppercase block">Salida al Agua</span>
-                      <strong className="text-xs text-[#051329]">{property.lotFeatures.waterAccess ? 'Sí (Directa)' : 'No'}</strong>
+                      <strong className="text-xs text-[#041020]">{property.lotFeatures.waterAccess ? 'Sí (Directa)' : 'No'}</strong>
                     </div>
                     {property.lotFeatures.fosiFos && (
-                      <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                      <div className="bg-white p-2.5 rounded-xl border border-[#dbdad8] shadow-2xs">
                         <span className="text-[10px] text-slate-500 font-bold uppercase block">Factibilidad FOS/FOT</span>
-                        <strong className="text-xs text-[#051329]">{property.lotFeatures.fosiFos}</strong>
+                        <strong className="text-xs text-[#041020]">{property.lotFeatures.fosiFos}</strong>
                       </div>
                     )}
                   </div>
@@ -654,14 +583,14 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
 
           {activeTab === 'amenities' && (
             <div className="space-y-4">
-              <h3 className="text-base font-bold text-[#051329]">Amenities & Equipamiento</h3>
+              <h3 className="text-base font-bold text-[#041020]">Amenities & Equipamiento</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {property.amenities.map((item) => (
                   <div
                     key={item}
-                    className="flex items-center gap-2 p-3 bg-white rounded-xl border border-slate-200 text-xs font-semibold text-[#051329]"
+                    className="flex items-center gap-2 p-3 bg-white rounded-xl border border-[#dbdad8] text-xs font-semibold text-[#041020]"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-[#D3122A]" />
+                    <CheckCircle2 className="w-4 h-4 text-[#B08237]" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -673,8 +602,8 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
             <div className="space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                  <h3 className="text-base font-bold text-[#051329] flex items-center gap-1.5">
-                    <MapPin className="w-5 h-5 text-[#D3122A]" />
+                  <h3 className="text-base font-bold text-[#041020] flex items-center gap-1.5">
+                    <MapPin className="w-5 h-5 text-[#B08237]" />
                     <span>Ubicación de la Propiedad</span>
                   </h3>
                   <p className="text-xs text-slate-600 font-medium">
@@ -685,14 +614,14 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                   href={externalGoogleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0B2F64] hover:bg-[#071D3F] text-white text-xs font-bold transition-colors cursor-pointer shrink-0 shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#041020] hover:bg-[#061a33] text-white text-xs font-bold transition-colors cursor-pointer shrink-0 shadow-xs border border-[#B08237]/40"
                 >
                   <span>Abrir en Google Maps</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-[#D3122A]" />
+                  <ExternalLink className="w-3.5 h-3.5 text-[#B08237]" />
                 </a>
               </div>
 
-              <div className="relative w-full h-[340px] sm:h-[420px] rounded-2xl overflow-hidden shadow-md border border-zinc-300 bg-zinc-100 group">
+              <div className="relative w-full h-[340px] sm:h-[420px] rounded-2xl overflow-hidden shadow-md border border-[#dbdad8] bg-zinc-100 group">
                 <iframe
                   key={mapZoom}
                   title={`Mapa ${property.title}`}
@@ -702,22 +631,22 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                   allowFullScreen
                 />
                 {/* Overlay Map Zoom Controls */}
-                <div className="absolute bottom-4 right-4 flex flex-col bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-zinc-300 p-1 gap-1 z-10">
+                <div className="absolute bottom-4 right-4 flex flex-col bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-[#dbdad8] p-1 gap-1 z-10">
                   <button
                     type="button"
                     onClick={() => setMapZoom((prev) => Math.min(prev + 1, 19))}
                     disabled={mapZoom >= 19}
-                    className="p-2 hover:bg-zinc-100 disabled:opacity-40 text-zinc-800 transition-colors cursor-pointer rounded-lg"
+                    className="p-2 hover:bg-[#dbdad8]/30 disabled:opacity-40 text-[#041020] transition-colors cursor-pointer rounded-lg"
                     title="Acercar mapa (+)"
                   >
-                    <Plus className="w-4 h-4 text-[#0B2F64]" />
+                    <Plus className="w-4 h-4 text-[#B08237]" />
                   </button>
-                  <div className="h-px bg-zinc-200 w-full" />
+                  <div className="h-px bg-[#dbdad8] w-full" />
                   <button
                     type="button"
                     onClick={() => setMapZoom((prev) => Math.max(prev - 1, 10))}
                     disabled={mapZoom <= 10}
-                    className="p-2 hover:bg-slate-100 disabled:opacity-40 text-zinc-800 transition-colors cursor-pointer rounded-lg"
+                    className="p-2 hover:bg-[#dbdad8]/30 disabled:opacity-40 text-[#041020] transition-colors cursor-pointer rounded-lg"
                     title="Alejar mapa (-)"
                   >
                     <Minus className="w-4 h-4 text-slate-700" />
@@ -736,8 +665,8 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
           onClick={() => setZoomImage(null)}
         >
           <div className="w-full flex items-center justify-between text-white max-w-6xl">
-            <div className="text-xs font-bold text-zinc-300">
-              <span className="text-[#D3122A]">{property.title}</span> — {formatLocationName(property.location.zone, property.location.city)}
+            <div className="text-xs font-bold text-[#dbdad8]">
+              <span className="text-[#B08237]">{property.title}</span> — {formatLocationName(property.location.zone, property.location.city)}
             </div>
             <button
               onClick={() => setZoomImage(null)}
@@ -757,9 +686,9 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                 onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'; }}
                 onClick={(e) => e.stopPropagation()}
               />
-              {/* Solid Angelini Inmobiliaria Watermark Badge (Original emblem colors with white text) */}
+              {/* Solid Angelini Inmobiliaria Watermark Badge */}
               <div className="absolute bottom-6 right-6 pointer-events-none z-10 opacity-35 drop-shadow-md">
-                <Logo variant="dark" size="md" />
+                <Logo variant="scrolled" size="md" />
               </div>
             </div>
             {property.images.length > 1 && (
@@ -792,7 +721,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
             )}
           </div>
 
-          <div className="text-center text-xs text-zinc-400 font-medium">
+          <div className="text-center text-xs text-[#dbdad8] font-medium">
             Haz clic fuera de la imagen o presiona la cruz para cerrar
           </div>
         </div>

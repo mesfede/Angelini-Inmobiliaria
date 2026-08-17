@@ -19,9 +19,9 @@ export const AngeliniEmblem: React.FC<{ sizeClass?: string; className?: string; 
   className = '',
   isLight = false,
 }) => {
-  const cls1 = '#02275c'; // El toro es azul y el filete final del logo es azul
-  const cls2 = '#ffffff'; // El filete blanco y el filete del borde rojo es blanco
-  const cls3 = '#e3171d'; // Borde rojo
+  const cls1 = '#B08237'; // El toro es marrón/dorado institucional
+  const cls2 = '#ffffff'; // El filete blanco
+  const cls3 = '#041020'; // Fondo azul marino institucional
 
   return (
     <div className={`relative shrink-0 select-none ${sizeClass} ${className}`}>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { MapPin, Search, LocateFixed, Check, AlertCircle } from 'lucide-react';
+import { MapPin, Search, LocateFixed, AlertCircle } from 'lucide-react';
 
 interface LocationPickerMapProps {
   lat: number | '';
@@ -16,8 +16,8 @@ const DEFAULT_LNG = -59.8585;
 
 // Custom Leaflet pin icon using clean styled HTML/SVG
 const pinHtml = `
-  <div style="position: relative; top: -16px; left: -16px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background-color: #0B2F64; border: 3px solid #ffffff; border-radius: 50%; box-shadow: 0 4px 14px rgba(0,0,0,0.4); cursor: grab;">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <div style="position: relative; top: -16px; left: -16px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background-color: #041020; border: 3px solid #B08237; border-radius: 50%; box-shadow: 0 4px 14px rgba(0,0,0,0.4); cursor: grab;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
       <circle cx="12" cy="10" r="3"></circle>
     </svg>
@@ -190,7 +190,7 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
     <div className="space-y-2 mt-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-          <MapPin className="w-3.5 h-3.5 text-[#D3122A]" />
+          <MapPin className="w-3.5 h-3.5 text-[#B08237]" />
           <span>Seleccionar en el Mapa (Clic o arrastrá el pin)</span>
         </div>
 
@@ -200,10 +200,10 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
               type="button"
               onClick={handleSearchAddressOnMap}
               disabled={isSearching}
-              className="px-2.5 py-1 text-[11px] font-semibold bg-blue-50 text-[#0B2F64] hover:bg-blue-100 border border-blue-200 rounded-lg flex items-center gap-1 transition-colors cursor-pointer disabled:opacity-50"
+              className="px-2.5 py-1 text-[11px] font-semibold bg-[#dbdad8]/30 text-[#041020] hover:bg-[#dbdad8]/60 border border-[#dbdad8] rounded-lg flex items-center gap-1 transition-colors cursor-pointer disabled:opacity-50"
               title="Buscar la dirección en el mapa"
             >
-              <Search className="w-3 h-3" />
+              <Search className="w-3 h-3 text-[#B08237]" />
               <span>{isSearching ? 'Buscando...' : 'Buscar dirección'}</span>
             </button>
           )}
@@ -212,28 +212,28 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
             type="button"
             onClick={handleUseCurrentLocation}
             disabled={isLocating}
-            className="px-2.5 py-1 text-[11px] font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 rounded-lg flex items-center gap-1 transition-colors cursor-pointer disabled:opacity-50"
+            className="px-2.5 py-1 text-[11px] font-semibold bg-[#dbdad8]/20 text-[#041020] hover:bg-[#dbdad8]/50 border border-[#dbdad8] rounded-lg flex items-center gap-1 transition-colors cursor-pointer disabled:opacity-50"
             title="Usar mi ubicación GPS actual"
           >
-            <LocateFixed className="w-3 h-3 text-[#0B2F64]" />
+            <LocateFixed className="w-3 h-3 text-[#B08237]" />
             <span>{isLocating ? 'Obteniendo GPS...' : 'Mi ubicación'}</span>
           </button>
         </div>
       </div>
 
       {searchMessage && (
-        <div className="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-800 text-white flex items-center gap-2 transition-all">
-          <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+        <div className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#041020] text-white flex items-center gap-2 transition-all">
+          <AlertCircle className="w-3.5 h-3.5 text-[#B08237] shrink-0" />
           <span>{searchMessage}</span>
         </div>
       )}
 
       {/* Interactive Leaflet Container */}
-      <div className="relative w-full h-56 sm:h-64 rounded-xl overflow-hidden border border-zinc-300 shadow-inner z-0">
+      <div className="relative w-full h-56 sm:h-64 rounded-xl overflow-hidden border border-[#dbdad8] shadow-inner z-0">
         <div ref={mapContainerRef} className="w-full h-full" />
 
-        <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-md text-[10px] font-medium text-zinc-600 shadow-xs border border-zinc-200/80 pointer-events-none z-[400]">
-          Hacé clic o arrastrá el pin verde para actualizar latitud/longitud
+        <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-md text-[10px] font-medium text-[#041020] shadow-xs border border-[#dbdad8] pointer-events-none z-[400]">
+          Hacé clic o arrastrá el pin para actualizar latitud/longitud
         </div>
       </div>
     </div>

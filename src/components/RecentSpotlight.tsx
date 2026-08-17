@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
-import { Home, Play, ArrowUpRight, MapPin, Maximize, Bed, Bath, Car, Video, Instagram } from 'lucide-react';
+import { Home, Play, ArrowUpRight, MapPin, Maximize, Bed, Bath, Car, Instagram } from 'lucide-react';
 import { Property } from '../types';
-import { getAssetUrl, formatLocationName, formatFullAddress, formatPropertyTitle } from '../lib/utils';
+import { formatFullAddress, formatPropertyTitle } from '../lib/utils';
 import { Logo } from './Logo';
-
 
 interface RecentSpotlightProps {
   properties: Property[];
@@ -16,7 +15,6 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
   currency,
   onSelectProperty,
 }) => {
-  // Find the spotlight property: the one marked as featured, or fallback to the first property
   const spotlightProperty = useMemo(() => {
     if (!properties || properties.length === 0) return null;
     return properties.find((p) => p.featured) || properties[0];
@@ -44,25 +42,25 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
   const getOperationBadgeColor = (op?: string) => {
     switch (op) {
       case 'VENTA':
-        return 'bg-[#02275c] text-white border border-white/30 shadow-xs';
+        return 'bg-[#041020] text-white border border-[#B08237]/40 shadow-xs';
       case 'ALQUILER':
       case 'ALQUILER TEMPORAL':
-        return 'bg-[#0284c7] text-white shadow-xs';
+        return 'bg-[#B08237] text-white shadow-xs';
       case 'LOTES':
       case 'LOTEO':
-        return 'bg-emerald-600 text-white shadow-xs';
+        return 'bg-emerald-700 text-white shadow-xs';
       default:
-        return 'bg-[#02275c] text-white border border-white/30 shadow-xs';
+        return 'bg-[#041020] text-white border border-[#B08237]/40 shadow-xs';
     }
   };
 
   const hasVideoOrReel = Boolean(spotlightProperty.videoUrl || spotlightProperty.instagramUrl);
 
   return (
-    <div className="bg-[#02275c] rounded-3xl p-6 sm:p-8 text-white border border-[#033b8a] shadow-2xl relative overflow-hidden group">
-      {/* Background ambient accents in red and blue */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#e3171d]/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="bg-[#041020] rounded-3xl p-6 sm:p-8 text-white border border-[#B08237]/30 shadow-2xl relative overflow-hidden group">
+      {/* Background ambient accents in gold and deep navy */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[#B08237]/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-stretch">
         {/* MEDIA PREVIEW CONTAINER (Always Main Selected Image) */}
@@ -99,7 +97,7 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
 
           {hasVideoOrReel && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover/img:bg-transparent transition-colors pointer-events-none">
-              <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white flex items-center justify-center shadow-2xl group-hover/img:scale-110 transition-transform border-2 border-white/90">
+              <div className="w-14 h-14 rounded-full bg-[#B08237] text-white flex items-center justify-center shadow-2xl group-hover/img:scale-110 transition-transform border-2 border-white/90">
                 <Play className="w-6 h-6 fill-white ml-0.5" />
               </div>
             </div>
@@ -110,8 +108,8 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
 
           {/* Badges Overlay */}
           <div className="absolute top-3 left-3 flex flex-wrap gap-2 z-10">
-            {/* 1. Propiedad destacada tag with color #A8772C and beating / pulsating animation */}
-            <span className="bg-[#A8772C] text-white text-[10px] font-black px-3 py-1 rounded-full tracking-wider flex items-center gap-1.5 shadow-lg border border-white/25 animate-pulse">
+            {/* 1. Propiedad destacada tag */}
+            <span className="bg-[#B08237] text-white text-[10px] font-black px-3 py-1 rounded-full tracking-wider flex items-center gap-1.5 shadow-lg border border-white/25 animate-pulse">
               <Home className="w-3.5 h-3.5 text-white shrink-0" />
               <span>Propiedad destacada</span>
             </span>
@@ -129,84 +127,84 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
             <div>
               {/* Header Label */}
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#e3171d] animate-ping shrink-0" />
-                <span className="text-xs font-semibold text-blue-200">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#B08237] animate-ping shrink-0" />
+                <span className="text-xs font-semibold text-[#dbdad8]">
                   Oportunidad exclusiva Angelini
                 </span>
               </div>
 
-              {/* 1. Title (first uppercase, rest lowercase) */}
+              {/* 1. Title */}
               <h3
                 onClick={() => onSelectProperty(spotlightProperty)}
-                className="text-xl sm:text-2xl font-bold text-white leading-snug hover:text-blue-200 transition-colors cursor-pointer drop-shadow-sm font-['Playfair_Display','Libre_Baskerville',Georgia,serif]"
+                className="text-xl sm:text-2xl font-bold text-white leading-snug hover:text-[#B08237] transition-colors cursor-pointer drop-shadow-sm font-['Playfair_Display','Libre_Baskerville',Georgia,serif]"
               >
                 {formatPropertyTitle(spotlightProperty.title)}
               </h3>
 
               {/* 2. Price / Consultar */}
               <div className="flex items-center gap-3 mt-2 flex-wrap">
-                <span className="text-2xl sm:text-3xl font-black text-white tracking-tight inline-block">
+                <span className="text-2xl sm:text-3xl font-black text-[#dbdad8] tracking-tight inline-block">
                   {displayPrice()}
                 </span>
               </div>
 
               {/* 3. Address & location */}
               <div className="flex items-center justify-between gap-2 mt-2.5 flex-wrap">
-                <p className="text-xs text-blue-100/90 font-medium flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#e3171d] shrink-0" />
+                <p className="text-xs text-white/90 font-medium flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-[#B08237] shrink-0" />
                   <span>{formatFullAddress(spotlightProperty.location.address, spotlightProperty.location.zone, spotlightProperty.location.city)}</span>
                 </p>
               </div>
             </div>
 
             {/* Description (White / light text) */}
-            <p className="hidden sm:block text-xs text-blue-100/85 line-clamp-3 leading-relaxed">
+            <p className="hidden sm:block text-xs text-[#dbdad8]/90 line-clamp-3 leading-relaxed">
               {spotlightProperty.description}
             </p>
 
-            {/* Quick Specs with red icon accents and white text */}
+            {/* Quick Specs with gold icon accents and white text */}
             <div className="grid grid-cols-4 gap-2 text-center bg-white/10 backdrop-blur-xs border border-white/15 text-white py-3 px-2 rounded-2xl shadow-inner">
               <div className="flex flex-col items-center justify-center">
                 <span className="font-bold text-white text-sm sm:text-base leading-none">
                   {spotlightProperty.coveredArea || spotlightProperty.totalArea ? `${spotlightProperty.coveredArea || spotlightProperty.totalArea} m²` : '—'}
                 </span>
-                <Maximize className="w-[22px] h-[22px] text-[#e3171d] mt-2" />
+                <Maximize className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
               <div className="flex flex-col items-center justify-center">
                 <span className="font-bold text-white text-sm sm:text-base leading-none">
                   {spotlightProperty.bedrooms || '—'}
                 </span>
-                <Bed className="w-[22px] h-[22px] text-[#e3171d] mt-2" />
+                <Bed className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
               <div className="flex flex-col items-center justify-center">
                 <span className="font-bold text-white text-sm sm:text-base leading-none">
                   {spotlightProperty.bathrooms || '—'}
                 </span>
-                <Bath className="w-[22px] h-[22px] text-[#e3171d] mt-2" />
+                <Bath className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
               <div className="flex flex-col items-center justify-center">
                 <span className="font-bold text-white text-sm sm:text-base leading-none">
                   {spotlightProperty.garages || '—'}
                 </span>
-                <Car className="w-[22px] h-[22px] text-[#e3171d] mt-2" />
+                <Car className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
             </div>
           </div>
 
-          {/* Actions - White button for ficha, Red button for WhatsApp consultation */}
+          {/* Actions - White button for ficha, Gold button for WhatsApp consultation */}
           <div className="pt-2 flex items-center gap-3">
             <button
               onClick={() => onSelectProperty(spotlightProperty)}
-              className="flex-1 bg-white hover:bg-slate-100 text-[#02275c] font-black py-3.5 px-4 rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:scale-[1.02]"
+              className="flex-1 bg-white hover:bg-[#dbdad8] text-[#041020] font-black py-3.5 px-4 rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:scale-[1.02]"
             >
               <span>Ver Ficha</span>
-              <ArrowUpRight className="w-4 h-4 text-[#02275c]" />
+              <ArrowUpRight className="w-4 h-4 text-[#B08237]" />
             </button>
             <a
               href={`https://wa.me/5492281301464?text=Hola%20Inmobiliaria%20Angelini,%20quiero%20consultar%20por%20la%20propiedad%20${encodeURIComponent(spotlightProperty.title)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-3.5 bg-[#e3171d] hover:bg-[#c01016] text-white rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center cursor-pointer shadow-lg hover:scale-[1.02] border border-white/20"
+              className="px-5 py-3.5 bg-[#B08237] hover:bg-[#9A702D] text-white rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center cursor-pointer shadow-lg hover:scale-[1.02] border border-white/20"
             >
               <span>Consultar</span>
             </a>
@@ -216,4 +214,3 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
     </div>
   );
 };
-

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { X, Lock, KeyRound, CheckCircle2, AlertCircle, Shield, User, Sparkles } from 'lucide-react';
+import { X, Lock, KeyRound, CheckCircle2, AlertCircle, Shield, User } from 'lucide-react';
 import {
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth';
@@ -54,18 +53,15 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
       verifyAndGrantAccess(userEmail);
     } catch (err: any) {
       console.warn('Google Auth notice:', err);
-      // Popup blocked or auth provider not enabled in console fallback:
       if (
         err.code === 'auth/popup-blocked' ||
         err.code === 'auth/operation-not-allowed' ||
         err.code === 'auth/unauthorized-domain'
       ) {
-        // Direct login fallback for mesfede@gmail.com
         verifyAndGrantAccess(AUTHORIZED_ADMIN_EMAIL);
       } else if (err.code === 'auth/popup-closed-by-user') {
         setErrorMsg('Inicio de sesión con Google cancelado.');
       } else {
-        // Fallback for demo/preview environment
         verifyAndGrantAccess(AUTHORIZED_ADMIN_EMAIL);
       }
     } finally {
@@ -101,19 +97,19 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#041020]/80 backdrop-blur-md animate-fadeIn">
+      <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-[#dbdad8] overflow-hidden">
         {/* HEADER */}
-        <div className="bg-gradient-to-r from-[#071D3F] via-[#0B2F64] to-[#051329] text-white p-5 flex items-center justify-between border-b border-white/10">
+        <div className="bg-gradient-to-r from-[#041020] via-[#041020] to-[#020912] text-white p-5 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-[#D3122A]">
+            <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-[#B08237]">
               <Shield className="w-5 h-5" />
             </div>
             <div className="text-left">
               <h3 className="text-sm font-bold text-white uppercase tracking-wider font-['Playfair_Display','Libre_Baskerville',Georgia,serif]">
                 Acceso Exclusivo de Administrador
               </h3>
-              <p className="text-[11px] text-slate-300">
+              <p className="text-[11px] text-[#dbdad8]">
                 Solo autorizado para: <strong className="text-white">{AUTHORIZED_ADMIN_EMAIL}</strong>
               </p>
             </div>
@@ -121,7 +117,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-[#dbdad8] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -148,7 +144,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full bg-white hover:bg-slate-50 text-slate-800 font-bold py-3 px-4 rounded-xl border-2 border-slate-300 shadow-xs hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
+            className="w-full bg-white hover:bg-slate-50 text-slate-800 font-bold py-3 px-4 rounded-xl border-2 border-[#dbdad8] shadow-xs hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -172,7 +168,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           </button>
 
           <div className="relative flex items-center justify-center my-2">
-            <div className="border-t border-slate-200 w-full"></div>
+            <div className="border-t border-[#dbdad8] w-full"></div>
             <span className="bg-white px-3 text-[10px] font-bold uppercase text-slate-400 shrink-0">
               o con email / clave
             </span>
@@ -180,8 +176,8 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
           <form onSubmit={handleAuthSubmit} className="space-y-3">
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-[#0B2F64]" />
+              <label className="block text-[11px] font-bold text-[#041020] mb-1 flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-[#B08237]" />
                 <span>Email de Administrador</span>
               </label>
               <input
@@ -190,13 +186,13 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="contacto@angeliniinmobiliaria.ar"
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0B2F64]"
+                className="w-full bg-[#dbdad8]/20 border border-[#dbdad8] rounded-xl px-3.5 py-2 text-xs font-semibold text-[#041020] focus:outline-none focus:ring-2 focus:ring-[#B08237]"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                <KeyRound className="w-3.5 h-3.5 text-[#0B2F64]" />
+              <label className="block text-[11px] font-bold text-[#041020] mb-1 flex items-center gap-1.5">
+                <KeyRound className="w-3.5 h-3.5 text-[#B08237]" />
                 <span>Contraseña</span>
               </label>
               <input
@@ -205,16 +201,16 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0B2F64]"
+                className="w-full bg-[#dbdad8]/20 border border-[#dbdad8] rounded-xl px-3.5 py-2 text-xs font-semibold text-[#041020] focus:outline-none focus:ring-2 focus:ring-[#B08237]"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#0B2F64] hover:bg-[#071D3F] text-white font-bold py-2.5 rounded-xl text-xs shadow transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full bg-[#041020] hover:bg-[#061a33] text-white font-bold py-2.5 rounded-xl text-xs shadow transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 border border-[#B08237]/40"
             >
-              <Lock className="w-3.5 h-3.5 text-[#D3122A]" />
+              <Lock className="w-3.5 h-3.5 text-[#B08237]" />
               <span>Ingresar con Email</span>
             </button>
           </form>

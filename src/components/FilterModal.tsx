@@ -35,9 +35,9 @@ export const FilterModal: React.FC<FilterModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex justify-end animate-fadeIn">
       <div className="relative w-full max-w-xl bg-white min-h-screen shadow-2xl flex flex-col justify-between overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-[#071D3F] via-[#0B2F64] to-[#051329] text-white p-5 flex items-center justify-between border-b border-white/15 z-10">
+        <div className="sticky top-0 bg-gradient-to-r from-[#041020] via-[#041020] to-[#020912] text-white p-5 flex items-center justify-between border-b border-white/15 z-10">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-5 h-5 text-[#D3122A]" />
+            <SlidersHorizontal className="w-5 h-5 text-[#B08237]" />
             <h2 className="text-lg font-bold tracking-wide font-['Playfair_Display','Libre_Baskerville',Georgia,serif]">Filtros Avanzados</h2>
           </div>
           <button
@@ -51,16 +51,16 @@ export const FilterModal: React.FC<FilterModalProps> = ({
         {/* Filter Content Body */}
         <div className="p-6 space-y-6 flex-1">
           {/* Special Highlights Toggles */}
-          <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+          <div className="grid grid-cols-2 gap-3 p-3 bg-[#dbdad8]/20 border border-[#dbdad8] rounded-xl">
             <button
               onClick={() => onUpdateFilters({ onlyWithVideo: !filters.onlyWithVideo })}
               className={`p-2.5 rounded-lg border text-left flex items-center gap-2 transition-all cursor-pointer ${
                 filters.onlyWithVideo
-                  ? 'bg-rose-50 border-rose-500 text-rose-700 font-bold'
-                  : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                  ? 'bg-amber-50 border-[#B08237] text-[#B08237] font-bold'
+                  : 'bg-white border-[#dbdad8] text-slate-600 hover:border-slate-300'
               }`}
             >
-              <Video className="w-4 h-4 text-rose-600 shrink-0" />
+              <Video className="w-4 h-4 text-[#B08237] shrink-0" />
               <div className="flex flex-col">
                 <span className="text-xs">Solo con Video</span>
                 <span className="text-[10px] text-slate-400 font-normal">Video Tour / IG Reel</span>
@@ -72,7 +72,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               className={`p-2.5 rounded-lg border text-left flex items-center gap-2 transition-all cursor-pointer ${
                 filters.onlyRecentlyUploaded
                   ? 'bg-amber-50 border-amber-500 text-amber-800 font-bold'
-                  : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                  : 'bg-white border-[#dbdad8] text-slate-600 hover:border-slate-300'
               }`}
             >
               <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
@@ -85,15 +85,15 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           {/* Operation Type */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <label className="text-xs font-bold text-[#041020] uppercase tracking-wider block">
               Operación
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
               {(['TODAS', 'VENTA', 'ALQUILER', 'LOTES', 'ALQUILER TEMPORAL'] as const).map((op) => {
-                let activeStyle = 'bg-[#051329] text-white border-[#051329]';
-                if (op === 'VENTA') activeStyle = 'bg-[#02275c] text-white border-[#02275c]';
-                if (op === 'ALQUILER' || op === 'ALQUILER TEMPORAL') activeStyle = 'bg-[#0284c7] text-white border-[#0284c7]';
-                if (op === 'LOTES') activeStyle = 'bg-emerald-600 text-white border-emerald-600';
+                let activeStyle = 'bg-[#041020] text-white border-[#041020]';
+                if (op === 'VENTA') activeStyle = 'bg-[#041020] text-white border-[#041020]';
+                if (op === 'ALQUILER' || op === 'ALQUILER TEMPORAL') activeStyle = 'bg-[#B08237] text-white border-[#B08237]';
+                if (op === 'LOTES') activeStyle = 'bg-emerald-700 text-white border-emerald-700';
 
                 return (
                   <button
@@ -102,7 +102,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     className={`py-2 px-1 text-xs font-bold rounded-lg transition-all border cursor-pointer truncate ${
                       filters.operation === op
                         ? activeStyle
-                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                        : 'bg-[#dbdad8]/20 text-[#041020] border-[#dbdad8] hover:bg-[#dbdad8]/50'
                     }`}
                   >
                     {op === 'TODAS' ? 'Todas' : op}
@@ -114,13 +114,13 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           {/* Property Type */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <label className="text-xs font-bold text-[#041020] uppercase tracking-wider block">
               Tipo de Propiedad
             </label>
             <select
               value={filters.propertyType}
               onChange={(e) => onUpdateFilters({ propertyType: e.target.value as PropertyType | 'TODOS' })}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-[#0B2F64]"
+              className="w-full bg-[#dbdad8]/20 border border-[#dbdad8] rounded-lg p-2.5 text-sm font-semibold text-[#041020] focus:ring-2 focus:ring-[#B08237]"
             >
               <option value="TODOS">Todos los tipos</option>
               <option value="Casa">Casa</option>
@@ -134,13 +134,13 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           {/* Zone */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <label className="text-xs font-bold text-[#041020] uppercase tracking-wider block">
               Ubicación / Zona
             </label>
             <select
               value={filters.zone}
               onChange={(e) => onUpdateFilters({ zone: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-[#0B2F64]"
+              className="w-full bg-[#dbdad8]/20 border border-[#dbdad8] rounded-lg p-2.5 text-sm font-semibold text-[#041020] focus:ring-2 focus:ring-[#B08237]"
             >
               {ZONES_LIST.map((z) => (
                 <option key={z} value={z}>
@@ -153,10 +153,10 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           {/* Price Range */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              <label className="text-xs font-bold text-[#041020] uppercase tracking-wider">
                 Rango de Precio ({filters.currency})
               </label>
-              <span className="text-xs font-bold text-[#D3122A]">
+              <span className="text-xs font-bold text-[#B08237]">
                 {filters.minPrice > 0 ? `$${filters.minPrice.toLocaleString()}` : 'Sin mín'} -{' '}
                 {filters.maxPrice < 2000000 ? `$${filters.maxPrice.toLocaleString()}` : 'Sin máx'}
               </span>
@@ -168,7 +168,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                   placeholder="Precio Mínimo"
                   value={filters.minPrice || ''}
                   onChange={(e) => onUpdateFilters({ minPrice: Number(e.target.value) || 0 })}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm text-slate-800 focus:ring-2 focus:ring-[#0B2F64]"
+                  className="w-full bg-[#dbdad8]/20 border border-[#dbdad8] rounded-lg p-2 text-sm text-[#041020] focus:ring-2 focus:ring-[#B08237]"
                 />
               </div>
               <div>
@@ -179,7 +179,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                   onChange={(e) =>
                     onUpdateFilters({ maxPrice: Number(e.target.value) || 2000000 })
                   }
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm text-slate-800 focus:ring-2 focus:ring-[#0B2F64]"
+                  className="w-full bg-[#dbdad8]/20 border border-[#dbdad8] rounded-lg p-2 text-sm text-[#041020] focus:ring-2 focus:ring-[#B08237]"
                 />
               </div>
             </div>
@@ -188,7 +188,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           {/* Bedrooms & Bathrooms */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2">
+              <label className="text-xs font-bold text-[#041020] uppercase tracking-wider block mb-2">
                 Dormitorios Mínimos
               </label>
               <div className="flex gap-1">
@@ -198,8 +198,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     onClick={() => onUpdateFilters({ minBedrooms: num })}
                     className={`flex-1 py-1.5 text-xs font-bold rounded border cursor-pointer ${
                       filters.minBedrooms === num
-                        ? 'bg-[#0B2F64] text-white border-[#0B2F64]'
-                        : 'bg-slate-50 text-slate-700 border-slate-200'
+                        ? 'bg-[#041020] text-white border-[#041020]'
+                        : 'bg-[#dbdad8]/20 text-[#041020] border-[#dbdad8]'
                     }`}
                   >
                     {num === 0 ? 'Indist.' : `${num}+`}
@@ -209,7 +209,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2">
+              <label className="text-xs font-bold text-[#041020] uppercase tracking-wider block mb-2">
                 Baños Mínimos
               </label>
               <div className="flex gap-1">
@@ -219,8 +219,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     onClick={() => onUpdateFilters({ minBathrooms: num })}
                     className={`flex-1 py-1.5 text-xs font-bold rounded border cursor-pointer ${
                       filters.minBathrooms === num
-                        ? 'bg-[#0B2F64] text-white border-[#0B2F64]'
-                        : 'bg-slate-50 text-slate-700 border-slate-200'
+                        ? 'bg-[#041020] text-white border-[#041020]'
+                        : 'bg-[#dbdad8]/20 text-[#041020] border-[#dbdad8]'
                     }`}
                   >
                     {num === 0 ? 'Indist.' : `${num}+`}
@@ -232,7 +232,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           {/* Min Area (m2) */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <label className="text-xs font-bold text-[#041020] uppercase tracking-wider block">
               Superficie Cubierta Mínima (m²)
             </label>
             <input
@@ -240,13 +240,13 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               placeholder="Ej: 100 m²"
               value={filters.minCoveredArea || ''}
               onChange={(e) => onUpdateFilters({ minCoveredArea: Number(e.target.value) || 0 })}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm text-slate-800 focus:ring-2 focus:ring-[#0B2F64]"
+              className="w-full bg-[#dbdad8]/20 border border-[#dbdad8] rounded-lg p-2.5 text-sm text-[#041020] focus:ring-2 focus:ring-[#B08237]"
             />
           </div>
 
           {/* Keyword Search */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <label className="text-xs font-bold text-[#041020] uppercase tracking-wider block">
               Búsqueda por Palabra Clave
             </label>
             <input
@@ -254,16 +254,16 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               placeholder="Ej: quincho, centro, pileta..."
               value={filters.refCodeSearch}
               onChange={(e) => onUpdateFilters({ refCodeSearch: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm text-slate-800 focus:ring-2 focus:ring-[#0B2F64]"
+              className="w-full bg-[#dbdad8]/20 border border-[#dbdad8] rounded-lg p-2.5 text-sm text-[#041020] focus:ring-2 focus:ring-[#B08237]"
             />
           </div>
 
           {/* Amenities & Characteristics Checklist */}
           <div className="space-y-2 pt-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <label className="text-xs font-bold text-[#041020] uppercase tracking-wider block">
               Características & Amenities
             </label>
-            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1 border border-slate-200 rounded-lg">
+            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1 border border-[#dbdad8] rounded-lg">
               {AMENITIES_LIST.map((amenity) => {
                 const isSelected = filters.amenities.includes(amenity);
                 return (
@@ -272,14 +272,14 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     onClick={() => toggleAmenity(amenity)}
                     className={`flex items-center gap-2 p-2 rounded-lg text-xs font-semibold transition-all border text-left cursor-pointer ${
                       isSelected
-                        ? 'bg-[#0B2F64]/10 border-[#0B2F64] text-[#0B2F64]'
-                        : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                        ? 'bg-[#B08237]/15 border-[#B08237] text-[#041020]'
+                        : 'bg-[#dbdad8]/10 border-[#dbdad8] text-[#041020] hover:bg-[#dbdad8]/30'
                     }`}
                   >
                     <div
                       className={`w-4 h-4 rounded flex items-center justify-center border ${
                         isSelected
-                          ? 'bg-[#0B2F64] border-[#0B2F64] text-white'
+                          ? 'bg-[#B08237] border-[#B08237] text-white'
                           : 'border-slate-300 bg-white'
                       }`}
                     >
@@ -294,10 +294,10 @@ export const FilterModal: React.FC<FilterModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="sticky bottom-0 bg-white p-4 border-t border-slate-200 flex items-center gap-3">
+        <div className="sticky bottom-0 bg-white p-4 border-t border-[#dbdad8] flex items-center gap-3">
           <button
             onClick={onResetFilters}
-            className="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
+            className="px-4 py-3 bg-[#dbdad8]/30 hover:bg-[#dbdad8]/60 text-[#041020] rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer border border-[#dbdad8]"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Limpiar</span>
@@ -305,7 +305,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           <button
             onClick={onClose}
-            className="flex-1 bg-[#D3122A] hover:bg-[#B30E22] text-white py-3 rounded-xl font-bold text-sm shadow-md transition-all cursor-pointer text-center"
+            className="flex-1 bg-[#B08237] hover:bg-[#9A702D] text-white py-3 rounded-xl font-bold text-sm shadow-md transition-all cursor-pointer text-center border border-white/20"
           >
             Ver {matchingCount} Propiedades
           </button>

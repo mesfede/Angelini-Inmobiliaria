@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { LayoutGrid, Map, SlidersHorizontal, ArrowUpDown, Phone, MessageSquare, Calculator, Heart, Sparkles, Building2, Trees, DollarSign, RotateCcw, ChevronLeft, ChevronRight, AlertTriangle, Upload, Plus } from 'lucide-react';
 import { Property, SearchFilters, OperationType, PropertyType } from './types';
 import { getAssetUrl } from './lib/utils';
@@ -102,6 +102,7 @@ export default function App() {
 
   // Global Realtime Properties State from Firebase
   const [properties, setProperties] = useState<Property[]>([]);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFirebaseConnected, setIsFirebaseConnected] = useState(false);
   const [firebaseError, setFirebaseError] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -151,14 +152,24 @@ export default function App() {
         if (fromFirebase) {
           setFirebaseError(null);
         }
+        setIsInitialLoading(false);
       },
       (error) => {
         const errorMsg = error instanceof Error ? error.message : String(error);
         console.warn('Firebase subscription warning:', error);
         setFirebaseError(errorMsg);
+        setIsInitialLoading(false);
       }
     );
-    return () => unsubscribe();
+
+    const fallbackTimer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 1500);
+
+    return () => {
+      unsubscribe();
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   // Admin Auth Handlers
@@ -473,6 +484,34 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-800 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
+      {/* INITIAL LOADING SPLASH SCREEN */}
+      <AnimatePresence>
+        {isInitialLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: 'easeInOut' }}
+            className="fixed inset-0 z-200 bg-white flex flex-col items-center justify-center p-6 select-none"
+          >
+            <div className="flex flex-col items-center justify-center space-y-6 text-center">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Logo variant="dark" size="lg" />
+              </motion.div>
+              <div className="flex flex-col items-center space-y-3">
+                <div className="w-8 h-8 border-3 border-[#0B2F64] border-t-transparent rounded-full animate-spin" />
+                <p className="text-xs font-bold tracking-[0.2em] text-zinc-600 uppercase">
+                  Cargando propiedades...
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Dynamic SEO & Head Tags Manager */}
       <SEOHead
         selectedProperty={selectedProperty}
@@ -852,7 +891,7 @@ export default function App() {
         </section>
 
         {/* VENDER / COMPRAR / TASAR - MÓDULO HERRAMIENTAS Y PUBLICACIÓN */}
-        <AboutSection />
+        <AboutSection onOpenTasacion={() => setValuationModalOpen(true)} />
       </div>
       </main>
 

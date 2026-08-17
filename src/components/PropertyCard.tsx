@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Heart, MapPin, Maximize, Bed, Bath, Car, Trees, ArrowUpRight, ChevronLeft, ChevronRight, Video, Play, Star, Flame, Instagram, Edit3, Trash2, ArrowUp, ArrowDown, Home } from 'lucide-react';
+import { Heart, MapPin, Maximize, Bed, Bath, Car, Trees, ArrowUpRight, ChevronLeft, ChevronRight, Video, Play, Flame, Instagram, Edit3, Trash2, ArrowUp, ArrowDown, Home } from 'lucide-react';
 import { Property } from '../types';
-import { getAssetUrl, formatLocationName, formatFullAddress, formatPropertyTitle } from '../lib/utils';
+import { formatFullAddress, formatPropertyTitle } from '../lib/utils';
 import { Logo } from './Logo';
-
 
 interface PropertyCardProps {
   property: Property;
@@ -82,19 +81,19 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   const getOperationBadgeColor = () => {
     switch (property.operation) {
       case 'VENTA':
-        return 'bg-[#02275c] text-white shadow-xs';
+        return 'bg-[#041020] text-white shadow-xs';
       case 'ALQUILER':
       case 'ALQUILER TEMPORAL':
-        return 'bg-[#0284c7] text-white shadow-xs';
+        return 'bg-[#B08237] text-white shadow-xs';
       case 'LOTES':
-        return 'bg-emerald-600 text-white shadow-xs';
+        return 'bg-emerald-700 text-white shadow-xs';
       default:
-        return 'bg-[#02275c] text-white shadow-xs';
+        return 'bg-[#041020] text-white shadow-xs';
     }
   };
 
   return (
-    <div className="group bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-[#0B2F64]/30 transition-all duration-300 flex flex-col justify-between">
+    <div className="group bg-white rounded-2xl overflow-hidden border border-[#dbdad8] shadow-sm hover:shadow-xl hover:border-[#B08237]/50 transition-all duration-300 flex flex-col justify-between">
       {/* CARD TOP IMAGE CONTAINER */}
       <div 
         className="relative aspect-4/3 overflow-hidden bg-slate-100 cursor-pointer select-none" 
@@ -128,14 +127,14 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         {property.statusBanner && property.statusBanner !== 'NINGUNA' && (
           <div className={`absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 py-3 sm:py-4 px-4 text-center font-black text-sm sm:text-base uppercase tracking-widest pointer-events-none transition-all shadow-2xl ${
             property.statusBanner.toLowerCase().includes('vendida')
-              ? 'bg-[#D3122A]/95 text-white border-y-2 border-white/40'
+              ? 'bg-[#B08237]/95 text-white border-y-2 border-white/40'
               : property.statusBanner.toLowerCase().includes('reservada')
-              ? 'bg-[#0B2F64]/95 text-white border-y-2 border-[#D3122A]'
-              : 'bg-[#071D3F]/95 text-white border-y-2 border-white/30'
+              ? 'bg-[#041020]/95 text-white border-y-2 border-[#B08237]'
+              : 'bg-[#041020]/95 text-white border-y-2 border-white/30'
           }`}>
-            <span className="text-[#D3122A] mr-2">●</span>
+            <span className="text-[#B08237] mr-2">●</span>
             {property.statusBanner}
-            <span className="text-[#D3122A] ml-2">●</span>
+            <span className="text-[#B08237] ml-2">●</span>
           </div>
         )}
 
@@ -175,13 +174,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
             {property.operation}
           </span>
           {property.featured && (
-            <span className="text-[10px] font-black px-2.5 py-1 rounded-md bg-[#A8772C] text-white uppercase tracking-wider flex items-center gap-1 shadow-md border border-white/20">
+            <span className="text-[10px] font-black px-2.5 py-1 rounded-md bg-[#B08237] text-white uppercase tracking-wider flex items-center gap-1 shadow-md border border-white/20">
               <Home className="w-3 h-3 text-white shrink-0" />
               <span>DESTACADA</span>
             </span>
           )}
           {property.isRecentlyUploaded && (
-            <span className="text-[10px] font-black px-2.5 py-1 rounded-md bg-orange-500 text-white uppercase tracking-wider flex items-center gap-1 shadow-md border border-white/20">
+            <span className="text-[10px] font-black px-2.5 py-1 rounded-md bg-amber-600 text-white uppercase tracking-wider flex items-center gap-1 shadow-md border border-white/20">
               <Flame className="w-3 h-3 fill-white text-white shrink-0" />
               <span>RECIÉN SUBIDA</span>
             </span>
@@ -194,12 +193,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
             e.stopPropagation();
             onToggleFavorite(property.id);
           }}
-          className="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white text-slate-700 shadow-md transition-all cursor-pointer border border-slate-200/60"
+          className="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white text-slate-700 shadow-md transition-all cursor-pointer border border-[#dbdad8]"
           title="Guardar en favoritos"
         >
           <Heart
             className={`w-4 h-4 transition-colors ${
-              isFavorite ? 'fill-[#D3122A] text-[#D3122A]' : 'text-slate-400 hover:text-[#D3122A]'
+              isFavorite ? 'fill-[#B08237] text-[#B08237]' : 'text-slate-400 hover:text-[#B08237]'
             }`}
           />
         </button>
@@ -210,7 +209,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         <div>
           {/* Price Header */}
           <div className="flex items-baseline justify-between mb-1">
-            <span className="text-xl font-black text-[#051329] tracking-tight">
+            <span className="text-xl font-black text-[#041020] tracking-tight">
               {displayPrice()}
             </span>
             {Boolean(property.expensesARS && property.expensesARS > 0) && (
@@ -223,58 +222,58 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           {/* Title */}
           <h3 
             onClick={() => onSelectProperty(property)}
-            className="text-base font-bold text-[#051329] group-hover:text-[#0B2F64] transition-colors line-clamp-1 cursor-pointer"
+            className="text-base font-bold text-[#041020] group-hover:text-[#B08237] transition-colors line-clamp-1 cursor-pointer"
           >
             {formatPropertyTitle(property.title)}
           </h3>
 
           {/* Location */}
           <div className="flex items-center gap-1 text-slate-500 text-xs mt-1.5 min-w-0">
-            <MapPin className="w-3.5 h-3.5 text-[#D3122A] shrink-0" />
+            <MapPin className="w-3.5 h-3.5 text-[#B08237] shrink-0" />
             <span className="truncate">{formatFullAddress(property.location.address, property.location.zone, property.location.city)}</span>
           </div>
         </div>
 
         {/* SPECS STRIP */}
-        <div className="pt-3 border-t border-slate-100 grid grid-cols-4 gap-1.5 text-center bg-slate-50 border border-slate-200/60 py-3 px-2 rounded-xl">
+        <div className="pt-3 border-t border-[#dbdad8]/50 grid grid-cols-4 gap-1.5 text-center bg-[#dbdad8]/20 border border-[#dbdad8] py-3 px-2 rounded-xl">
           {property.operation === 'LOTES' || property.type === 'Lote / Terreno' ? (
             <>
               <div className="col-span-2 flex flex-col items-center justify-center">
-                <span className="font-extrabold text-[#0B2F64] text-sm leading-none">{property.totalArea} m²</span>
-                <Maximize className="w-[22px] h-[22px] text-[#0B2F64] mt-2" />
+                <span className="font-extrabold text-[#041020] text-sm leading-none">{property.totalArea} m²</span>
+                <Maximize className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
               <div className="col-span-2 flex flex-col items-center justify-center">
-                <span className="font-extrabold text-[#D3122A] text-xs leading-none">
+                <span className="font-extrabold text-[#B08237] text-xs leading-none">
                   {property.lotFeatures?.waterAccess ? 'Agua' : 'Plano'}
                 </span>
-                <Trees className="w-[22px] h-[22px] text-[#0B2F64] mt-2" />
+                <Trees className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
             </>
           ) : (
             <>
               <div className="flex flex-col items-center justify-center">
-                <span className="font-extrabold text-[#0B2F64] text-sm sm:text-base leading-none">
+                <span className="font-extrabold text-[#041020] text-sm sm:text-base leading-none">
                   {property.coveredArea > 0 ? `${property.coveredArea} m²` : '—'}
                 </span>
-                <Maximize className="w-[22px] h-[22px] text-[#0B2F64] mt-2" />
+                <Maximize className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
               <div className="flex flex-col items-center justify-center">
-                <span className="font-extrabold text-[#0B2F64] text-sm sm:text-base leading-none">
+                <span className="font-extrabold text-[#041020] text-sm sm:text-base leading-none">
                   {property.bedrooms > 0 ? property.bedrooms : '—'}
                 </span>
-                <Bed className="w-[22px] h-[22px] text-[#0B2F64] mt-2" />
+                <Bed className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
               <div className="flex flex-col items-center justify-center">
-                <span className="font-extrabold text-[#0B2F64] text-sm sm:text-base leading-none">
+                <span className="font-extrabold text-[#041020] text-sm sm:text-base leading-none">
                   {property.bathrooms > 0 ? property.bathrooms : '—'}
                 </span>
-                <Bath className="w-[22px] h-[22px] text-[#0B2F64] mt-2" />
+                <Bath className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
               <div className="flex flex-col items-center justify-center">
-                <span className="font-extrabold text-[#0B2F64] text-sm sm:text-base leading-none">
+                <span className="font-extrabold text-[#041020] text-sm sm:text-base leading-none">
                   {property.garages > 0 ? property.garages : '—'}
                 </span>
-                <Car className="w-[22px] h-[22px] text-[#0B2F64] mt-2" />
+                <Car className="w-[22px] h-[22px] text-[#B08237] mt-2" />
               </div>
             </>
           )}
@@ -361,17 +360,17 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 
             <button
               onClick={() => onSelectProperty(property)}
-              className="flex-1 bg-slate-50 hover:bg-slate-100 text-[#0B2F64] hover:text-[#071D3F] font-extrabold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer border border-slate-200 shadow-xs"
+              className="flex-1 bg-white hover:bg-[#dbdad8]/30 text-[#041020] hover:text-[#041020] font-extrabold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer border border-[#dbdad8] shadow-xs"
             >
               <span>Ver Ficha</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-[#0B2F64]" />
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#B08237]" />
             </button>
 
             <a
               href={`https://wa.me/5492281301464?text=Hola%20Inmobiliaria%20Angelini,%20quiero%20consultar%20por%20la%20propiedad%20${encodeURIComponent(property.title)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3.5 py-2 bg-[#D3122A] hover:bg-[#B30E22] text-white rounded-xl text-xs font-black transition-colors flex items-center gap-1 cursor-pointer shadow-sm"
+              className="px-3.5 py-2 bg-[#B08237] hover:bg-[#9A702D] text-white rounded-xl text-xs font-black transition-colors flex items-center gap-1 cursor-pointer shadow-sm border border-white/20"
               title="Consultar por WhatsApp"
             >
               <span>Consultar</span>
