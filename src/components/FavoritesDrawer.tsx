@@ -2,7 +2,7 @@ import React from 'react';
 import { X, Trash2, Heart, ArrowUpRight, MapPin } from 'lucide-react';
 import { Property } from '../types';
 import { formatPropertyTitle } from '../lib/utils';
-import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
+import { BRAND_PLACEHOLDER_IMAGE, sanitizeImageUrl } from '../lib/brandPlaceholder';
 
 interface FavoritesDrawerProps {
   isOpen: boolean;
@@ -84,7 +84,7 @@ export const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({
                 className="bg-[#dbdad8]/15 border border-[#dbdad8] p-3 rounded-2xl flex gap-3 items-center hover:bg-[#dbdad8]/30 transition-all group"
               >
                 <img
-                  src={p.images?.[0] || BRAND_PLACEHOLDER_IMAGE}
+                  src={sanitizeImageUrl(p.images?.[0])}
                   alt={p.title}
                   className="w-20 h-20 rounded-xl object-cover shrink-0 cursor-pointer"
                   onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}

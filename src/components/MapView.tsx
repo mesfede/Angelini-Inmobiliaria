@@ -3,7 +3,7 @@ import { MapPin, Navigation, ExternalLink, Search, Globe, Building2 } from 'luci
 import { Property } from '../types';
 import { getAssetUrl, formatLocationName, formatFullAddress, formatPropertyTitle } from '../lib/utils';
 import { Logo } from './Logo';
-import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
+import { BRAND_PLACEHOLDER_IMAGE, sanitizeImageUrl } from '../lib/brandPlaceholder';
 
 
 interface MapViewProps {
@@ -155,7 +155,7 @@ export const MapView: React.FC<MapViewProps> = ({
         {activeProp && (
           <div className="absolute bottom-4 left-4 right-4 md:left-6 md:right-auto md:max-w-md bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-2xl border-2 border-[#946E00] z-40 text-zinc-900 flex gap-4 items-center">
             <img
-              src={activeProp.images?.[0] || BRAND_PLACEHOLDER_IMAGE}
+              src={sanitizeImageUrl(activeProp.images?.[0])}
               alt={activeProp.title}
               className="w-20 h-20 rounded-xl object-cover shrink-0 border border-zinc-200"
               onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}
@@ -234,7 +234,7 @@ export const MapView: React.FC<MapViewProps> = ({
               }`}
             >
               <img
-                src={p.images?.[0] || BRAND_PLACEHOLDER_IMAGE}
+                src={sanitizeImageUrl(p.images?.[0])}
                 alt={p.title}
                 className="w-16 h-16 rounded-lg object-cover"
                 onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}

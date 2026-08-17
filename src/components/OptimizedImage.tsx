@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
+import { BRAND_PLACEHOLDER_IMAGE, sanitizeImageUrl } from '../lib/brandPlaceholder';
 
 interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -22,7 +22,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const activeSrc = hasError || !src ? fallbackSrc : src;
+  const cleanSrc = sanitizeImageUrl(src, fallbackSrc);
+  const activeSrc = hasError || !cleanSrc ? fallbackSrc : cleanSrc;
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-200">

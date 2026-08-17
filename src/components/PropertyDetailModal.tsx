@@ -3,7 +3,7 @@ import { X, MapPin, Maximize, Bed, Bath, Car, Phone, Mail, CheckCircle2, Chevron
 import { Property } from '../types';
 import { getAssetUrl, formatLocationName, formatFullAddress, formatPropertyTitle } from '../lib/utils';
 import { Logo } from './Logo';
-import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
+import { BRAND_PLACEHOLDER_IMAGE, sanitizePropertyImages, sanitizeImageUrl } from '../lib/brandPlaceholder';
 
 const getInstagramEmbedUrl = (url?: string): string | null => {
   if (!url) return null;
@@ -65,7 +65,8 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
 
   if (!property) return null;
 
-  const currentPhotoUrl = property.images[activeImageIndex] || property.images[0] || BRAND_PLACEHOLDER_IMAGE;
+  const cleanImages = sanitizePropertyImages(property.images);
+  const currentPhotoUrl = sanitizeImageUrl(cleanImages[activeImageIndex] || cleanImages[0]);
 
   const scrollThumbnails = (direction: 'left' | 'right') => {
     if (thumbnailRef.current) {
@@ -246,13 +247,13 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                   )}
                 </div>
 
-                {property.images.length > 1 && (
+                {cleanImages.length > 1 && (
                   <>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setActiveImageIndex(
-                          (prev) => (prev - 1 + property.images.length) % property.images.length
+                          (prev) => (prev - 1 + cleanImages.length) % cleanImages.length
                         );
                       }}
                       className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 hover:bg-black/80 text-white transition-all cursor-pointer shadow-md"
@@ -264,7 +265,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                       onClick={(e) => {
                         e.stopPropagation();
                         setActiveImageIndex(
-                          (prev) => (prev + 1) % property.images.length
+                          (prev) => (prev + 1) % cleanImages.length
                         );
                       }}
                       className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 hover:bg-black/80 text-white transition-all cursor-pointer shadow-md"
@@ -277,7 +278,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
               </div>
 
               {/* Thumbnails Row */}
-              {property.images.length > 1 && (
+              {cleanImages.length > 1 && (
                 <div className="relative flex items-center">
                   <button
                     onClick={() => scrollThumbnails('left')}
@@ -289,7 +290,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                     ref={thumbnailRef}
                     className="flex gap-2 overflow-x-auto no-scrollbar py-1"
                   >
-                    {property.images.map((img, idx) => (
+                    {cleanImages.map((img, idx) => (
                       <button
                         key={idx}
                         onClick={() => setActiveImageIndex(idx)}
@@ -300,9 +301,10 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                         }`}
                       >
                         <img
-                          src={img}
+                          src={sanitizeImageUrl(img)}
                           alt={`${property.title} miniatura ${idx + 1}`}
                           className="w-full h-full object-cover"
+                          onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}
                         />
                       </button>
                     ))}
@@ -694,14 +696,14 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                 <Logo variant="scrolled" size="md" />
               </div>
             </div>
-            {property.images.length > 1 && (
+            {cleanImages.length > 1 && (
               <>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    const idx = property.images.indexOf(zoomImage);
-                    const prevIdx = idx > 0 ? idx - 1 : property.images.length - 1;
-                    setZoomImage(property.images[prevIdx]);
+                    const idx = cleanImages.indexOf(zoomImage || '');
+                    const prevIdx = idx > 0 ? idx - 1 : cleanImages.length - 1;
+                    setZoomImage(cleanImages[prevIdx]);
                     setActiveImageIndex(prevIdx);
                   }}
                   className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/70 hover:bg-black text-white transition-all cursor-pointer shadow-xl border border-zinc-700"
@@ -711,9 +713,9 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    const idx = property.images.indexOf(zoomImage);
-                    const nextIdx = idx < property.images.length - 1 ? idx + 1 : 0;
-                    setZoomImage(property.images[nextIdx]);
+                    const idx = cleanImages.indexOf(zoomImage || '');
+                    const nextIdx = idx < cleanImages.length - 1 && idx >= 0 ? idx + 1 : 0;
+                    setZoomImage(cleanImages[nextIdx]);
                     setActiveImageIndex(nextIdx);
                   }}
                   className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/70 hover:bg-black text-white transition-all cursor-pointer shadow-xl border border-zinc-700"

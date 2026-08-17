@@ -44,3 +44,62 @@ const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500
 export const BRAND_PLACEHOLDER_IMAGE = `data:image/svg+xml;utf8,${encodeURIComponent(svgContent)}`;
 
 export const BRAND_AGENT_AVATAR = '/angelini-bull-emblem.svg';
+
+/**
+ * Checks whether an image URL is a generic stock photo, unsplash url, empty or invalid placeholder.
+ */
+export const isStockOrInvalidImage = (url?: string | null): boolean => {
+  if (!url || typeof url !== 'string') return true;
+  const trimmed = url.trim();
+  if (!trimmed) return true;
+  
+  const lower = trimmed.toLowerCase();
+  if (
+    lower.includes('unsplash.com') ||
+    lower.includes('images.unsplash') ||
+    lower.includes('pexels.com') ||
+    lower.includes('pixabay.com') ||
+    lower.includes('placeholder.com') ||
+    lower.includes('via.placeholder') ||
+    lower.includes('dummyimage') ||
+    lower.includes('stock-photo') ||
+    lower.includes('photo-1600596542815') ||
+    lower.includes('photo-1600585154340') ||
+    lower.includes('photo-1512917774080') ||
+    lower.includes('photo-1560250097')
+  ) {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Returns either the clean real user image URL or the official Angelini branded placeholder.
+ */
+export const sanitizeImageUrl = (url?: string | null, fallback: string = BRAND_PLACEHOLDER_IMAGE): string => {
+  if (isStockOrInvalidImage(url)) {
+    return fallback;
+  }
+  return url!.trim();
+};
+
+/**
+ * Sanitizes a list of property images, eliminating all stock/unsplash links and guaranteeing
+ * that if no valid user photo exists, it contains [BRAND_PLACEHOLDER_IMAGE].
+ */
+export const sanitizePropertyImages = (images?: string[] | null): string[] => {
+  if (!images || !Array.isArray(images) || images.length === 0) {
+    return [BRAND_PLACEHOLDER_IMAGE];
+  }
+
+  const cleanList = images
+    .filter((img) => typeof img === 'string' && img.trim().length > 0 && !isStockOrInvalidImage(img))
+    .map((img) => img.trim());
+
+  if (cleanList.length === 0) {
+    return [BRAND_PLACEHOLDER_IMAGE];
+  }
+
+  return cleanList;
+};
+

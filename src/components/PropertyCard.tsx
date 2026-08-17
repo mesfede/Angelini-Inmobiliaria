@@ -3,7 +3,7 @@ import { Heart, MapPin, Maximize, Bed, Bath, Car, Trees, ArrowUpRight, ChevronLe
 import { Property } from '../types';
 import { formatFullAddress, formatPropertyTitle } from '../lib/utils';
 import { Logo } from './Logo';
-import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
+import { BRAND_PLACEHOLDER_IMAGE, sanitizePropertyImages, sanitizeImageUrl } from '../lib/brandPlaceholder';
 
 interface PropertyCardProps {
   property: Property;
@@ -34,14 +34,17 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
+  const cleanImages = sanitizePropertyImages(property.images);
+  const activePhoto = sanitizeImageUrl(cleanImages[currentImageIndex] || cleanImages[0]);
+
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % property.images.length);
+    setCurrentImageIndex((prev) => (prev + 1) % cleanImages.length);
   };
 
   const prevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev - 1 + property.images.length) % property.images.length);
+    setCurrentImageIndex((prev) => (prev - 1 + cleanImages.length) % cleanImages.length);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -54,9 +57,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
     const diff = touchStartX - touchEndX;
     if (Math.abs(diff) > 35) {
       if (diff > 0) {
-        setCurrentImageIndex((prev) => (prev + 1) % property.images.length);
+        setCurrentImageIndex((prev) => (prev + 1) % cleanImages.length);
       } else {
-        setCurrentImageIndex((prev) => (prev - 1 + property.images.length) % property.images.length);
+        setCurrentImageIndex((prev) => (prev - 1 + cleanImages.length) % cleanImages.length);
       }
     }
     setTouchStartX(null);
@@ -103,7 +106,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         onTouchEnd={handleTouchEnd}
       >
         <img
-          src={property.images?.[currentImageIndex] || BRAND_PLACEHOLDER_IMAGE}
+          src={activePhoto}
           alt={property.title}
           loading="lazy"
           decoding="async"

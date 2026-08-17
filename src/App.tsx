@@ -12,6 +12,7 @@ import {
   exportPropertiesBackupJSON,
   importPropertiesBackupJSON,
   syncAllLocalToFirestore,
+  refreshPropertiesFromCloud,
 } from './services/propertyService';
 import { Header } from './components/Header';
 import { HeroSearch } from './components/HeroSearch';
@@ -468,10 +469,13 @@ export default function App() {
 
   const handleSyncToFirebase = async () => {
     try {
-      const count = await syncAllLocalToFirestore();
-      alert(`¡Se han sincronizado ${count} propiedades a la base de datos de Firebase!`);
+      const liveList = await refreshPropertiesFromCloud();
+      setProperties(liveList);
+      setIsFirebaseConnected(true);
+      setFirebaseError(null);
+      alert(`¡Sincronización exitosa! Se cargaron ${liveList.length} propiedades activas directamente desde la web en vivo.`);
     } catch (err: any) {
-      alert(`Error al sincronizar con Firebase: ${err?.message || 'No se pudo conectar.'}`);
+      alert(`Error al sincronizar con la nube: ${err?.message || 'No se pudo conectar.'}`);
       throw err;
     }
   };

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Plus, LogOut, ShieldCheck, CheckCircle2, Download, Upload, Cloud } from 'lucide-react';
+import { Plus, LogOut, ShieldCheck, CheckCircle2, Download, Upload, RefreshCw } from 'lucide-react';
 
 interface AdminBarProps {
   adminEmail: string;
@@ -101,17 +101,17 @@ export const AdminBar: React.FC<AdminBarProps> = ({
           className="hidden"
         />
 
-        {/* Sync to Firebase Button */}
+        {/* Sync from Live Web Button */}
         {onSyncFirebase && (
           <button
             type="button"
             onClick={handleSyncClick}
             disabled={isSyncing}
             className="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
-            title="Subir todas las propiedades locales a la nube de Firebase"
+            title="Sincronizar y actualizar catálogo desde la web en vivo (Hostinger)"
           >
-            <Cloud className={`w-4 h-4 text-emerald-400 ${isSyncing ? 'animate-bounce' : ''}`} />
-            <span className="inline">{isSyncing ? 'Subiendo...' : 'Sincronizar Firebase'}</span>
+            <RefreshCw className={`w-4 h-4 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
+            <span className="inline">{isSyncing ? 'Sincronizando...' : 'Sincronizar con Web en Vivo'}</span>
           </button>
         )}
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, MapPin, ExternalLink, Building2, Search, Navigation, DollarSign, Trees, ArrowRight, Eye } from 'lucide-react';
 import { Property, OperationType } from '../types';
 import { Logo } from './Logo';
+import { BRAND_PLACEHOLDER_IMAGE, sanitizeImageUrl } from '../lib/brandPlaceholder';
 
 interface GoogleMapsModalProps {
   isOpen: boolean;
@@ -154,8 +155,9 @@ export const GoogleMapsModal: React.FC<GoogleMapsModalProps> = ({
                       }`}
                     >
                       <img
-                        src={p.images[0]}
+                        src={sanitizeImageUrl(p.images?.[0])}
                         alt={p.title}
+                        onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}
                         className={`w-16 h-16 rounded-lg object-cover shrink-0 border ${isSelected ? 'border-[#B08237]/40' : 'border-[#dbdad8]'}`}
                       />
                       <div className="flex-1 min-w-0">

@@ -33,7 +33,7 @@ import {
 } from 'lucide-react';
 import { Property, OperationType, PropertyType } from '../types';
 import { ZONES_LIST } from '../data/properties';
-import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
+import { BRAND_PLACEHOLDER_IMAGE, sanitizePropertyImages, isStockOrInvalidImage } from '../lib/brandPlaceholder';
 import { addPropertyToFirestore, updatePropertyInFirestore, saveCustomLocalProperty } from '../services/propertyService';
 import { compressImageFile } from '../lib/imageOptimizer';
 import { parseInstagramListing, ParsedPropertyData } from '../lib/instagramParser';
@@ -308,7 +308,8 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
 
       setDescription(propertyToEdit.description || '');
 
-      setImageUrlsText((propertyToEdit.images || []).join('\n'));
+      const cleanInitialImages = (propertyToEdit.images || []).filter(img => !isStockOrInvalidImage(img));
+      setImageUrlsText(cleanInitialImages.join('\n'));
       setMainImageIndex(0);
       setVideoUrl(propertyToEdit.videoUrl || '');
       setVideoType(propertyToEdit.videoType || 'mp4');
@@ -408,7 +409,7 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
   const parsedImageUrls = imageUrlsText
     .split(/\r?\n/)
     .map((url) => url.trim())
-    .filter((url) => url.length > 5 && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image/')));
+    .filter((url) => url.length > 5 && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image/')) && !isStockOrInvalidImage(url));
 
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -468,6 +469,8 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
       const rest = orderedImages.filter((_, idx) => idx !== mainImageIndex);
       orderedImages = [chosenMain, ...rest];
     }
+
+    orderedImages = sanitizePropertyImages(orderedImages);
 
     setLoading(true);
 

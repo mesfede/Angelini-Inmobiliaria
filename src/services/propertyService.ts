@@ -14,7 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { Property } from '../types';
-import { BRAND_PLACEHOLDER_IMAGE, BRAND_AGENT_AVATAR } from '../lib/brandPlaceholder';
+import { BRAND_PLACEHOLDER_IMAGE, BRAND_AGENT_AVATAR, sanitizePropertyImages, isStockOrInvalidImage } from '../lib/brandPlaceholder';
 
 export enum OperationType {
   CREATE = 'create',
@@ -102,6 +102,24 @@ export const getCustomLocalProperties = (): Property[] => {
       p => p.id && p.id.toString().length > 5 && !deletedIds.has(p.id) && (!p.refCode || !deletedIds.has(p.refCode))
     );
     
+    let hadStockImages = false;
+    properties = properties.map((p) => {
+      const cleanImages = sanitizePropertyImages(p.images);
+      if (JSON.stringify(cleanImages) !== JSON.stringify(p.images)) {
+        hadStockImages = true;
+      }
+      return {
+        ...p,
+        images: cleanImages,
+      };
+    });
+
+    if (hadStockImages) {
+      try {
+        localStorage.setItem(CUSTOM_PROPERTIES_KEY, JSON.stringify(properties));
+      } catch {}
+    }
+
     return properties;
   } catch {
     return [];
@@ -113,6 +131,7 @@ export const saveCustomLocalProperty = (property: Property) => {
     const current = getCustomLocalProperties();
     const cleanProp: Property = {
       ...property,
+      images: sanitizePropertyImages(property.images),
       statusBanner: property.statusBanner && property.statusBanner !== 'NINGUNA' ? property.statusBanner : undefined,
     };
     // Unmark as deleted if it was previously in deleted list
@@ -171,9 +190,7 @@ const mapDocToProperty = (id: string, data: any): Property => {
     bathrooms: Number(data.bathrooms) || 0,
     garages: Number(data.garages) || 0,
     description: data.description || '',
-    images: Array.isArray(data.images) && data.images.length > 0
-      ? data.images
-      : [BRAND_PLACEHOLDER_IMAGE],
+    images: sanitizePropertyImages(data.images),
     featured: Boolean(data.featured),
     isNewDevelopment: Boolean(data.isNewDevelopment),
     isRecentlyUploaded: Boolean(data.isRecentlyUploaded),
@@ -237,7 +254,7 @@ export const subscribeToProperties = (
   try {
     const handleLocalUpdate = () => onUpdate(getCombinedLocalProperties(), false);
     
-    // ALWAYS load local properties instantly first to prevent empty state if Firebase hangs
+    // Load local properties initially for instant render before Firestore response
     handleLocalUpdate();
 
     if (!db) {
@@ -253,58 +270,23 @@ export const subscribeToProperties = (
     return onSnapshot(
       q,
       (snapshot) => {
-        const deletedIds = new Set(getDeletedPropertyIds());
-
         if (snapshot.empty) {
-          console.log('Firestore collection is empty. Auto-syncing custom local properties...');
-          const customLocal = getCustomLocalProperties().filter(
-            p => !deletedIds.has(p.id) && (!p.refCode || !deletedIds.has(p.refCode))
-          );
-          
-          customLocal.forEach((prop) => {
-            const docRef = doc(db, PROPERTIES_COLLECTION, prop.id);
-            setDoc(docRef, {
-              ...prop,
-              updatedAt: Timestamp.now(),
-            }).catch((e) => console.warn('Error auto-seeding property to Firestore:', e));
-          });
-
-          // Deliver local custom properties while Firestore populates
-          onUpdate(customLocal, true);
+          // If Firestore is empty, clear local storage and deliver empty list
+          try {
+            localStorage.setItem(CUSTOM_PROPERTIES_KEY, JSON.stringify([]));
+          } catch {}
+          onUpdate([], true);
           return;
         }
 
-        const firestorePropsMap = new Map<string, Property>();
+        // Map live Firestore documents - Firestore is the single source of truth
+        const firestoreList: Property[] = [];
         snapshot.docs.forEach((docSnap) => {
           const prop = mapDocToProperty(docSnap.id, docSnap.data());
-          // If property is in deleted list, purge it from Firestore and ignore
-          if (deletedIds.has(docSnap.id) || deletedIds.has(prop.id) || (prop.refCode && deletedIds.has(prop.refCode))) {
-            deleteDoc(docSnap.ref).catch(() => {});
-            return;
-          }
-          firestorePropsMap.set(prop.id, prop);
+          firestoreList.push(prop);
         });
 
-        // Add local custom properties if they aren't in Firestore yet
-        const customLocal = getCustomLocalProperties();
-        customLocal.forEach((customProp) => {
-          if (deletedIds.has(customProp.id) || (customProp.refCode && deletedIds.has(customProp.refCode))) {
-            return;
-          }
-          if (!firestorePropsMap.has(customProp.id)) {
-            firestorePropsMap.set(customProp.id, customProp);
-            
-            // Try to auto-sync it to Firestore since it's missing
-            const docRef = doc(db, PROPERTIES_COLLECTION, customProp.id);
-            setDoc(docRef, {
-              ...customProp,
-              updatedAt: Timestamp.now(),
-            }).catch((e) => console.warn('Auto-sync local property notice:', e));
-          }
-        });
-
-        const firestoreList: Property[] = Array.from(firestorePropsMap.values());
-
+        // Sort properties by displayOrder, recency, creation date
         firestoreList.sort((a, b) => {
           if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
             if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
@@ -324,10 +306,14 @@ export const subscribeToProperties = (
           return a.id.localeCompare(b.id);
         });
 
+        // Update local cache so offline view exactly mirrors Firestore
+        try {
+          localStorage.setItem(CUSTOM_PROPERTIES_KEY, JSON.stringify(firestoreList));
+        } catch {}
+
         onUpdate(firestoreList, true);
       },
       (error) => {
-        // Silently fall back to local storage catalog if Firestore rule or connection is pending
         if (onError) onError(error);
         onUpdate(getCombinedLocalProperties(), false);
       }
@@ -380,13 +366,18 @@ export const addPropertyToFirestore = async (propertyData: Omit<Property, 'id'>)
     }
   }
 
-  const fullProp: Property = { id: docId, ...propertyData };
+  const sanitizedPayload = {
+    ...propertyData,
+    images: propertyData.images ? sanitizePropertyImages(propertyData.images) : [BRAND_PLACEHOLDER_IMAGE],
+  };
+
+  const fullProp: Property = { id: docId, ...sanitizedPayload };
   saveCustomLocalProperty(fullProp);
 
   if (db) {
     try {
       const cleanData = removeUndefinedValues({
-        ...propertyData,
+        ...sanitizedPayload,
         createdAt: new Date().toISOString().split('T')[0],
         updatedAt: Timestamp.now(),
       });
@@ -429,15 +420,20 @@ export const updatePropertyInFirestore = async (id: string, propertyData: Partia
 
   const currentLocal = getCustomLocalProperties();
   const existing = currentLocal.find((p) => p.id === id);
+  const sanitizedUpdate = {
+    ...propertyData,
+    ...(propertyData.images ? { images: sanitizePropertyImages(propertyData.images) } : {}),
+  };
+
   if (existing) {
-    saveCustomLocalProperty({ ...existing, ...propertyData } as Property);
+    saveCustomLocalProperty({ ...existing, ...sanitizedUpdate } as Property);
   }
 
   if (db) {
     try {
       const docRef = doc(db, PROPERTIES_COLLECTION, id);
       const cleanData = removeUndefinedValues({
-        ...propertyData,
+        ...sanitizedUpdate,
         updatedAt: Timestamp.now(),
       });
       await setDoc(docRef, cleanData, { merge: true });
@@ -614,5 +610,52 @@ export const syncAllLocalToFirestore = async (): Promise<number> => {
   }
   return count;
 };
+
+/**
+ * Force a fresh refresh directly from the live Firestore database.
+ * Replaces any local state with the exact live properties from Hostinger / Firestore.
+ */
+export const refreshPropertiesFromCloud = async (): Promise<Property[]> => {
+  if (!db) {
+    throw new Error('Firebase no está inicializado.');
+  }
+
+  const propertiesRef = collection(db, PROPERTIES_COLLECTION);
+  const snapshot = await getDocs(propertiesRef);
+
+  const liveList: Property[] = [];
+  snapshot.docs.forEach((docSnap) => {
+    const prop = mapDocToProperty(docSnap.id, docSnap.data());
+    liveList.push(prop);
+  });
+
+  liveList.sort((a, b) => {
+    if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
+      if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
+    } else if (a.displayOrder !== undefined) {
+      return -1;
+    } else if (b.displayOrder !== undefined) {
+      return 1;
+    }
+
+    if (a.isRecentlyUploaded && !b.isRecentlyUploaded) return -1;
+    if (!a.isRecentlyUploaded && b.isRecentlyUploaded) return 1;
+    
+    const dateA = new Date(a.createdAt || '2000-01-01').getTime();
+    const dateB = new Date(b.createdAt || '2000-01-01').getTime();
+    if (dateA !== dateB) return dateB - dateA;
+    
+    return a.id.localeCompare(b.id);
+  });
+
+  try {
+    localStorage.setItem(CUSTOM_PROPERTIES_KEY, JSON.stringify(liveList));
+    localStorage.removeItem(DELETED_PROPERTIES_KEY);
+    window.dispatchEvent(new Event('mef_local_properties_updated'));
+  } catch {}
+
+  return liveList;
+};
+
 
 

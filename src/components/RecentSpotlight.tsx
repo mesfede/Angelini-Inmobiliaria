@@ -3,7 +3,7 @@ import { Home, Play, ArrowUpRight, MapPin, Maximize, Bed, Bath, Car, Instagram }
 import { Property } from '../types';
 import { formatFullAddress, formatPropertyTitle } from '../lib/utils';
 import { Logo } from './Logo';
-import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
+import { BRAND_PLACEHOLDER_IMAGE, sanitizeImageUrl } from '../lib/brandPlaceholder';
 
 interface RecentSpotlightProps {
   properties: Property[];
@@ -71,7 +71,7 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
         >
           {/* Main property image */}
           <img
-            src={spotlightProperty.images?.[0] || BRAND_PLACEHOLDER_IMAGE}
+            src={sanitizeImageUrl(spotlightProperty.images?.[0])}
             alt={spotlightProperty.title}
             loading="eager"
             decoding="async"
