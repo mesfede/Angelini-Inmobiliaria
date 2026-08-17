@@ -25,11 +25,17 @@ import {
   Upload,
   Home,
   Flame,
+  Zap,
+  Wand2,
+  Copy,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { Property, OperationType, PropertyType } from '../types';
 import { ZONES_LIST } from '../data/properties';
 import { addPropertyToFirestore, updatePropertyInFirestore, saveCustomLocalProperty } from '../services/propertyService';
 import { compressImageFile } from '../lib/imageOptimizer';
+import { parseInstagramListing, ParsedPropertyData } from '../lib/instagramParser';
 
 interface AdminPropertyModalProps {
   isOpen: boolean;
@@ -96,23 +102,23 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
   const [title, setTitle] = useState('');
   const [operation, setOperation] = useState<OperationType>('VENTA');
   const [type, setType] = useState<PropertyType>('Casa');
-  const [priceUSD, setPriceUSD] = useState<number | ''>(120000);
+  const [priceUSD, setPriceUSD] = useState<number | ''>('');
   const [priceARS, setPriceARS] = useState<number | ''>('');
-  const [expensesARS, setExpensesARS] = useState<number | ''>(0);
+  const [expensesARS, setExpensesARS] = useState<number | ''>('');
 
   // Location
-  const [zone, setZone] = useState('General La Madrid - Centro');
-  const [address, setAddress] = useState('Calle San Martín 500');
-  const [city, setCity] = useState('General La Madrid');
-  const [lat, setLat] = useState<number | ''>(-37.2483);
-  const [lng, setLng] = useState<number | ''>(-61.2619);
+  const [zone, setZone] = useState('Azul - Centro');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('Azul');
+  const [lat, setLat] = useState<number | ''>(-36.7769);
+  const [lng, setLng] = useState<number | ''>(-59.8585);
 
   // Specs
-  const [coveredArea, setCoveredArea] = useState<number | ''>(150);
-  const [totalArea, setTotalArea] = useState<number | ''>(400);
-  const [bedrooms, setBedrooms] = useState<number | ''>(3);
-  const [bathrooms, setBathrooms] = useState<number | ''>(2);
-  const [garages, setGarages] = useState<number | ''>(1);
+  const [coveredArea, setCoveredArea] = useState<number | ''>('');
+  const [totalArea, setTotalArea] = useState<number | ''>('');
+  const [bedrooms, setBedrooms] = useState<number | ''>('');
+  const [bathrooms, setBathrooms] = useState<number | ''>('');
+  const [garages, setGarages] = useState<number | ''>('');
 
   // Text details
   const [description, setDescription] = useState('');
@@ -131,14 +137,106 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
   const [statusBanner, setStatusBanner] = useState<string>('NINGUNA');
   const [displayOrder, setDisplayOrder] = useState<number | ''>('');
   const [allAmenities, setAllAmenities] = useState<string[]>(getStoredAmenities());
-  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([
-    'Parrilla',
-    'Gas Natural',
-    'Agua Corriente',
-  ]);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [customAmenity, setCustomAmenity] = useState('');
   const [amenitySearchQuery, setAmenitySearchQuery] = useState('');
   const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+
+  // SMART AUTO-FILL FROM INSTAGRAM / SOCIAL MEDIA
+  const [instagramRawText, setInstagramRawText] = useState('');
+  const [isIgPanelOpen, setIsIgPanelOpen] = useState(true);
+  const [autoFillSummary, setAutoFillSummary] = useState<{
+    count: number;
+    items: string[];
+  } | null>(null);
+
+  const handleApplyInstagramAutoFill = (textToProcess?: string) => {
+    const raw = (textToProcess || instagramRawText).trim();
+    if (!raw) {
+      alert('Por favor pegue el texto de la publicación de Instagram o WhatsApp.');
+      return;
+    }
+
+    const parsed = parseInstagramListing(raw);
+    const detectedItems: string[] = [];
+
+    if (parsed.title) {
+      setTitle(parsed.title);
+      detectedItems.push(`Título: "${parsed.title}"`);
+    }
+    if (parsed.operation) {
+      setOperation(parsed.operation);
+      detectedItems.push(`Operación: ${parsed.operation}`);
+    }
+    if (parsed.type) {
+      setType(parsed.type);
+      detectedItems.push(`Tipo: ${parsed.type}`);
+    }
+    if (parsed.bedrooms !== '') {
+      setBedrooms(parsed.bedrooms);
+      detectedItems.push(`${parsed.bedrooms} Dormitorios`);
+    }
+    if (parsed.bathrooms !== '') {
+      setBathrooms(parsed.bathrooms);
+      detectedItems.push(`${parsed.bathrooms} Baños`);
+    }
+    if (parsed.garages !== '') {
+      setGarages(parsed.garages);
+      detectedItems.push(`${parsed.garages} Cochera(s)`);
+    }
+    if (parsed.coveredArea !== '') {
+      setCoveredArea(parsed.coveredArea);
+      detectedItems.push(`Sup. Cubierta: ${parsed.coveredArea} m²`);
+    }
+    if (parsed.totalArea !== '') {
+      setTotalArea(parsed.totalArea);
+      detectedItems.push(`Sup. Total: ${parsed.totalArea} m²`);
+    }
+    if (parsed.address) {
+      setAddress(parsed.address);
+      detectedItems.push(`Dirección: ${parsed.address}`);
+    }
+    if (parsed.city) {
+      setCity(parsed.city);
+    }
+    if (parsed.zone) {
+      setZone(parsed.zone);
+    }
+    if (parsed.priceUSD !== '') {
+      setPriceUSD(parsed.priceUSD);
+      detectedItems.push(`Precio USD: $${parsed.priceUSD.toLocaleString()}`);
+    }
+    if (parsed.priceARS !== '') {
+      setPriceARS(parsed.priceARS);
+      detectedItems.push(`Precio ARS: $${parsed.priceARS.toLocaleString()}`);
+    }
+    if (parsed.description) {
+      setDescription(parsed.description);
+      detectedItems.push('Descripción completa');
+    }
+    if (parsed.instagramUrl) {
+      setInstagramUrl(parsed.instagramUrl);
+      detectedItems.push('Enlace Instagram');
+    }
+
+    // Merge amenities
+    if (parsed.amenities && parsed.amenities.length > 0) {
+      const mergedAll = Array.from(new Set([...allAmenities, ...parsed.amenities])).sort((a, b) =>
+        a.localeCompare(b, 'es', { sensitivity: 'base' })
+      );
+      setAllAmenities(mergedAll);
+      saveStoredAmenities(mergedAll);
+
+      const mergedSelected = Array.from(new Set([...selectedAmenities, ...parsed.amenities]));
+      setSelectedAmenities(mergedSelected);
+      detectedItems.push(`${parsed.amenities.length} Servicios/Amenities (${parsed.amenities.join(', ')})`);
+    }
+
+    setAutoFillSummary({
+      count: detectedItems.length,
+      items: detectedItems,
+    });
+  };
 
   const handleGenerateAiDescription = async () => {
     try {
@@ -173,6 +271,10 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
       setIsGeneratingAi(false);
     }
   };
+
+  // Compression and upload status
+  const [isCompressingImages, setIsCompressingImages] = useState(false);
+  const [compressionFeedback, setCompressionFeedback] = useState('');
 
   // Form submission state
   const [loading, setLoading] = useState(false);
@@ -228,16 +330,38 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
       const randomRef = `SC-${Math.floor(100 + Math.random() * 900)}`;
       setRefCode(randomRef);
       setTitle('');
+      setOperation('VENTA');
+      setType('Casa');
       setPriceUSD('');
+      setPriceARS('');
+      setExpensesARS('');
+      setZone('Azul - Centro');
+      setAddress('');
+      setCity('Azul');
+      setLat(-36.7769);
+      setLng(-59.8585);
+      setCoveredArea('');
+      setTotalArea('');
+      setBedrooms('');
+      setBathrooms('');
+      setGarages('');
       setDescription('');
       setImageUrlsText('');
       setMainImageIndex(0);
       setVideoUrl('');
+      setVideoType('mp4');
       setInstagramUrl('');
+      setFeatured(false);
+      setIsNewDevelopment(false);
+      setIsRecentlyUploaded(true);
       setStatusBanner('NINGUNA');
+      setDisplayOrder('');
       setAllAmenities(stored);
-      setSelectedAmenities(['Parrilla', 'Gas Natural', 'Agua Corriente']);
+      setSelectedAmenities([]);
     }
+    // Always clear the Instagram paste box and auto-fill feedback on modal open/reset
+    setInstagramRawText('');
+    setAutoFillSummary(null);
     setAmenitySearchQuery('');
   }, [propertyToEdit, isOpen]);
 
@@ -278,10 +402,6 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
   const filteredAmenities = allAmenities.filter((amenity) =>
     amenity.toLowerCase().includes(amenitySearchQuery.toLowerCase())
   );
-
-  // Compression and upload status
-  const [isCompressingImages, setIsCompressingImages] = useState(false);
-  const [compressionFeedback, setCompressionFeedback] = useState('');
 
   // Helper to parse image URLs from textarea (URLs or compressed data URLs)
   const parsedImageUrls = imageUrlsText
@@ -460,6 +580,98 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
 
         {/* FORM BODY */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+          {/* SMART AUTO-FILL FROM INSTAGRAM / SOCIAL MEDIA / WHATSAPP */}
+          <div className="bg-gradient-to-br from-[#041020] via-[#071D3F] to-[#041020] border-2 border-[#B08237]/60 rounded-2xl p-4 sm:p-5 text-white shadow-xl space-y-3 relative overflow-hidden">
+            {/* Ambient gold glow */}
+            <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#B08237]/20 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex items-center justify-between border-b border-white/15 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#B08237] text-white flex items-center justify-center shadow-md">
+                  <Zap className="w-4 h-4 fill-white" />
+                </div>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+                    <span>⚡ Autocompletar con Instagram / WhatsApp / Redes</span>
+                  </h4>
+                  <p className="text-[11px] text-[#dbdad8]/90 font-medium">
+                    Pegue el texto o copy de su publicación y el sistema llenará metros, dormitorios, baños, comodidades y dirección al instante.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsIgPanelOpen(!isIgPanelOpen)}
+                className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 transition-colors cursor-pointer"
+                title={isIgPanelOpen ? 'Minimizar' : 'Expandir'}
+              >
+                {isIgPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
+
+            {isIgPanelOpen && (
+              <div className="space-y-3 pt-1">
+                <div className="relative">
+                  <textarea
+                    rows={4}
+                    value={instagramRawText}
+                    onChange={(e) => setInstagramRawText(e.target.value)}
+                    placeholder="Pegue aquí el texto o descripción de su publicación de Instagram, WhatsApp o Facebook..."
+                    className="w-full bg-[#041020]/90 border border-white/20 focus:border-[#B08237] rounded-xl p-3 text-xs font-sans text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#B08237] transition-all"
+                  />
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleApplyInstagramAutoFill()}
+                    className="px-4 py-2.5 bg-[#B08237] hover:bg-[#8F6626] text-white text-xs font-black rounded-xl shadow-lg transition-all cursor-pointer inline-flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    <Wand2 className="w-4 h-4" />
+                    <span>Autocompletar Formulario Ahora</span>
+                  </button>
+
+                  {instagramRawText && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setInstagramRawText('');
+                        setAutoFillSummary(null);
+                      }}
+                      className="text-xs text-white/70 hover:text-white transition-colors cursor-pointer px-2 py-1 bg-white/10 rounded-lg hover:bg-white/20"
+                    >
+                      Limpiar texto
+                    </button>
+                  )}
+                </div>
+
+                {/* Feedback of what was successfully detected and populated */}
+                {autoFillSummary && (
+                  <div className="mt-3 p-3 bg-emerald-950/80 border border-emerald-500/40 rounded-xl space-y-1.5 animate-fadeIn text-emerald-100">
+                    <div className="flex items-center gap-2 text-xs font-black text-emerald-300">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>¡Formulario completado exitosamente! ({autoFillSummary.count} campos identificados)</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {autoFillSummary.items.map((item, idx) => (
+                        <span
+                          key={idx}
+                          className="text-[10px] font-bold bg-emerald-900/60 border border-emerald-400/30 text-emerald-200 px-2 py-0.5 rounded-md"
+                        >
+                          ✓ {item}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-emerald-200/80 pt-1">
+                      💡 Puede revisar y ajustar cualquier campo en las secciones inferiores o continuar cargando las fotos.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* SECTION 1: BASIC IDENTIFICATION & CLASSIFICATION */}
           <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 sm:p-5 space-y-4">
             <h4 className="text-xs font-bold text-zinc-800 uppercase tracking-wider border-b border-zinc-200 pb-2 flex items-center gap-2">
