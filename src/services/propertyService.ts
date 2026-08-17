@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { Property } from '../types';
+import { BRAND_PLACEHOLDER_IMAGE, BRAND_AGENT_AVATAR } from '../lib/brandPlaceholder';
 
 export enum OperationType {
   CREATE = 'create',
@@ -172,7 +173,7 @@ const mapDocToProperty = (id: string, data: any): Property => {
     description: data.description || '',
     images: Array.isArray(data.images) && data.images.length > 0
       ? data.images
-      : ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80'],
+      : [BRAND_PLACEHOLDER_IMAGE],
     featured: Boolean(data.featured),
     isNewDevelopment: Boolean(data.isNewDevelopment),
     isRecentlyUploaded: Boolean(data.isRecentlyUploaded),
@@ -186,7 +187,7 @@ const mapDocToProperty = (id: string, data: any): Property => {
       name: data.agent?.name || 'Angelini Inmobiliaria',
       phone: data.agent?.phone || '+54 9 2281 301464',
       email: data.agent?.email || 'contacto@angeliniinmobiliaria.ar',
-      avatar: data.agent?.avatar || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80',
+      avatar: data.agent?.avatar || BRAND_AGENT_AVATAR,
     },
     createdAt: data.createdAt || new Date().toISOString().split('T')[0],
   };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
 
 interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -8,7 +9,7 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
   priority?: boolean;
 }
 
-const DEFAULT_FALLBACK = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';
+const DEFAULT_FALLBACK = BRAND_PLACEHOLDER_IMAGE;
 
 export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   src,

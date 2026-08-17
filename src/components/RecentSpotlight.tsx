@@ -3,6 +3,7 @@ import { Home, Play, ArrowUpRight, MapPin, Maximize, Bed, Bath, Car, Instagram }
 import { Property } from '../types';
 import { formatFullAddress, formatPropertyTitle } from '../lib/utils';
 import { Logo } from './Logo';
+import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
 
 interface RecentSpotlightProps {
   properties: Property[];
@@ -70,7 +71,7 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
         >
           {/* Main property image */}
           <img
-            src={spotlightProperty.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'}
+            src={spotlightProperty.images?.[0] || BRAND_PLACEHOLDER_IMAGE}
             alt={spotlightProperty.title}
             loading="eager"
             decoding="async"
@@ -78,7 +79,7 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
             onError={(e) => {
               if (e.currentTarget.dataset.hasError) return;
               e.currentTarget.dataset.hasError = 'true';
-              e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80';
+              e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE;
             }}
           />
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Trash2, Heart, ArrowUpRight, MapPin } from 'lucide-react';
 import { Property } from '../types';
 import { formatPropertyTitle } from '../lib/utils';
+import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
 
 interface FavoritesDrawerProps {
   isOpen: boolean;
@@ -83,10 +84,10 @@ export const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({
                 className="bg-[#dbdad8]/15 border border-[#dbdad8] p-3 rounded-2xl flex gap-3 items-center hover:bg-[#dbdad8]/30 transition-all group"
               >
                 <img
-                  src={p.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'}
+                  src={p.images?.[0] || BRAND_PLACEHOLDER_IMAGE}
                   alt={p.title}
                   className="w-20 h-20 rounded-xl object-cover shrink-0 cursor-pointer"
-                  onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'; }}
+                  onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}
                   onClick={() => {
                     onSelectProperty(p);
                     onClose();

@@ -3,6 +3,7 @@ import { X, MapPin, Maximize, Bed, Bath, Car, Phone, Mail, CheckCircle2, Chevron
 import { Property } from '../types';
 import { getAssetUrl, formatLocationName, formatFullAddress, formatPropertyTitle } from '../lib/utils';
 import { Logo } from './Logo';
+import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
 
 const getInstagramEmbedUrl = (url?: string): string | null => {
   if (!url) return null;
@@ -64,7 +65,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
 
   if (!property) return null;
 
-  const currentPhotoUrl = property.images[activeImageIndex] || property.images[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80';
+  const currentPhotoUrl = property.images[activeImageIndex] || property.images[0] || BRAND_PLACEHOLDER_IMAGE;
 
   const scrollThumbnails = (direction: 'left' | 'right') => {
     if (thumbnailRef.current) {
@@ -186,12 +187,12 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                 title="Haga doble clic para ampliar a pantalla completa"
               >
                 <img
-                  src={currentPhotoUrl || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'}
+                  src={currentPhotoUrl || BRAND_PLACEHOLDER_IMAGE}
                   alt={property.title}
                   loading="eager"
                   decoding="async"
                   className="w-full h-full object-cover scale-[1.05] origin-center transition-all duration-300 group-hover:scale-[1.07]"
-                  onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'; }}
+                  onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}
                 />
 
                 {/* Angelini Inmobiliaria Official Watermark Logo */}
@@ -682,10 +683,10 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
           <div className="relative max-w-6xl max-h-[85vh] flex items-center justify-center overflow-hidden my-auto p-2">
             <div className="relative inline-flex items-center justify-center max-w-full max-h-[82vh]">
               <img
-                src={zoomImage}
+                src={zoomImage || BRAND_PLACEHOLDER_IMAGE}
                 alt="Foto ampliada"
                 className="max-w-full max-h-[82vh] object-contain rounded-xl shadow-2xl border border-zinc-800"
-                onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'; }}
+                onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}
                 onClick={(e) => e.stopPropagation()}
               />
               {/* Solid Angelini Inmobiliaria Watermark Badge */}

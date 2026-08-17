@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { Property, OperationType, PropertyType } from '../types';
 import { ZONES_LIST } from '../data/properties';
+import { BRAND_PLACEHOLDER_IMAGE } from '../lib/brandPlaceholder';
 import { addPropertyToFirestore, updatePropertyInFirestore, saveCustomLocalProperty } from '../services/propertyService';
 import { compressImageFile } from '../lib/imageOptimizer';
 import { parseInstagramListing, ParsedPropertyData } from '../lib/instagramParser';
@@ -461,7 +462,7 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
     // Reorder images so selected main image is at index 0 (featured / cover photo)
     let orderedImages = [...parsedImageUrls];
     if (orderedImages.length === 0) {
-      orderedImages = ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80'];
+      orderedImages = [BRAND_PLACEHOLDER_IMAGE];
     } else if (mainImageIndex >= 0 && mainImageIndex < orderedImages.length) {
       const chosenMain = orderedImages[mainImageIndex];
       const rest = orderedImages.filter((_, idx) => idx !== mainImageIndex);
@@ -945,10 +946,37 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
               </span>
             </div>
 
-            {/* Upload from Device with Compression */}
-            <div className="bg-white p-4 rounded-xl border border-dashed border-[#B08237]/60 space-y-2 text-center">
+            {/* OPTION 1: PASTE PHOTO URLS / WEB LINKS DIRECTLY */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wide">
+                  🔗 Pegar Links / URLs de Fotos (Uno por línea)
+                </label>
+                <span className="text-[11px] text-zinc-500 font-medium">
+                  Enlaces web directos (Unsplash, Drive, Servidor propio, etc.)
+                </span>
+              </div>
+              <textarea
+                rows={3}
+                value={imageUrlsText}
+                onChange={(e) => setImageUrlsText(e.target.value)}
+                placeholder={`https://miservidor.com/propiedades/foto-fachada.jpg
+https://miservidor.com/propiedades/foto-living.jpg
+https://miservidor.com/propiedades/foto-dormitorio.jpg`}
+                className="w-full bg-white border border-zinc-300 focus:border-[#B08237] rounded-xl p-3 text-xs font-mono text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#B08237] transition-all shadow-xs"
+              />
+              <p className="text-[11px] text-zinc-500 flex items-center gap-1">
+                <HelpCircle className="w-3.5 h-3.5 text-[#B08237] shrink-0" />
+                <span>
+                  Copie y pegue cada enlace en un renglón nuevo. Se previsualizarán al instante debajo.
+                </span>
+              </p>
+            </div>
+
+            {/* OPTION 2: UPLOAD DIRECTLY FROM PC OR MOBILE */}
+            <div className="bg-white p-3.5 rounded-xl border border-dashed border-[#B08237]/60 space-y-2 text-center">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <label className="px-4 py-2.5 bg-[#041020] hover:bg-[#071D3F] text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer inline-flex items-center gap-2">
+                <label className="px-4 py-2 bg-[#041020] hover:bg-[#071D3F] text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer inline-flex items-center gap-2">
                   <Upload className="w-4 h-4 text-[#B08237]" />
                   <span>{isCompressingImages ? 'Comprimiendo fotos...' : 'Subir Fotos desde Celular o PC'}</span>
                   <input
@@ -971,22 +999,6 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
                 </p>
               )}
             </div>
-
-            {/* Optional Bulk URLs Section */}
-            <details className="text-xs text-zinc-500">
-              <summary className="cursor-pointer font-bold text-[#B08237] hover:underline mb-2 select-none">
-                🔗 ¿Desea pegar enlaces web directos en vez de subir fotos? (Opcional)
-              </summary>
-              <div className="pt-2 space-y-1">
-                <textarea
-                  rows={2}
-                  value={imageUrlsText}
-                  onChange={(e) => setImageUrlsText(e.target.value)}
-                  placeholder="https://ejemplo.com/foto1.jpg&#10;https://ejemplo.com/foto2.jpg"
-                  className="w-full bg-white border border-zinc-300 rounded-xl p-2.5 text-xs font-mono text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#B08237]"
-                />
-              </div>
-            </details>
 
             {/* VISUAL GALLERY THUMBNAILS WITH MAIN PHOTO SELECTOR */}
             {parsedImageUrls.length > 0 && (
@@ -1015,7 +1027,7 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
                             className="w-full h-full object-cover"
                             onError={(e) => {
                               const img = e.currentTarget;
-                              if (img.dataset.hasError) return; img.dataset.hasError = 'true'; img.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80';
+                              if (img.dataset.hasError) return; img.dataset.hasError = 'true'; img.src = BRAND_PLACEHOLDER_IMAGE;
                             }}
                           />
 
