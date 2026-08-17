@@ -12,7 +12,7 @@ interface PropertyCardProps {
   onSelectProperty: (property: Property) => void;
   isAdmin?: boolean;
   onEditProperty?: (property: Property) => void;
-  onDeleteProperty?: (id: string) => void;
+  onDeleteProperty?: (id: string, refCode?: string) => void;
   onMoveUpProperty?: (id: string) => void;
   onMoveDownProperty?: (id: string) => void;
 }
@@ -291,7 +291,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
                   e.stopPropagation();
                   setShowConfirmDelete(false);
                   if (onDeleteProperty) {
-                    onDeleteProperty(property.id);
+                    onDeleteProperty(property.id, property.refCode);
                   }
                 }}
                 className="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-black transition-colors cursor-pointer shadow-sm"

@@ -75,13 +75,14 @@ export const getDeletedPropertyIds = (): string[] => {
   }
 };
 
-export const markPropertyAsDeletedLocal = (id: string) => {
+export const markPropertyAsDeletedLocal = (id: string, refCode?: string) => {
   try {
     const current = getDeletedPropertyIds();
-    if (!current.includes(id)) {
-      localStorage.setItem(DELETED_PROPERTIES_KEY, JSON.stringify([...current, id]));
-      window.dispatchEvent(new Event('mef_local_properties_updated'));
-    }
+    const toAdd = [id];
+    if (refCode && refCode !== id) toAdd.push(refCode);
+    const updated = Array.from(new Set([...current, ...toAdd]));
+    localStorage.setItem(DELETED_PROPERTIES_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new Event('mef_local_properties_updated'));
   } catch (e) {
     console.warn('Error marking property as deleted locally:', e);
   }
@@ -93,15 +94,12 @@ export const getCustomLocalProperties = (): Property[] => {
     if (!raw) return [];
     
     let properties: Property[] = JSON.parse(raw);
+    const deletedIds = new Set(getDeletedPropertyIds());
     
-    // Filter out old example properties (which had short IDs like '1', '2', '3')
-    const originalLength = properties.length;
-    properties = properties.filter(p => p.id && p.id.toString().length > 5);
-    
-    // If we removed some, update local storage immediately
-    if (properties.length < originalLength) {
-      localStorage.setItem(CUSTOM_PROPERTIES_KEY, JSON.stringify(properties));
-    }
+    // Filter out deleted properties and legacy short-id samples
+    properties = properties.filter(
+      p => p.id && p.id.toString().length > 5 && !deletedIds.has(p.id) && (!p.refCode || !deletedIds.has(p.refCode))
+    );
     
     return properties;
   } catch {
@@ -116,6 +114,13 @@ export const saveCustomLocalProperty = (property: Property) => {
       ...property,
       statusBanner: property.statusBanner && property.statusBanner !== 'NINGUNA' ? property.statusBanner : undefined,
     };
+    // Unmark as deleted if it was previously in deleted list
+    const deleted = getDeletedPropertyIds();
+    const filteredDeleted = deleted.filter(d => d !== cleanProp.id && d !== cleanProp.refCode);
+    if (filteredDeleted.length !== deleted.length) {
+      localStorage.setItem(DELETED_PROPERTIES_KEY, JSON.stringify(filteredDeleted));
+    }
+
     const idx = current.findIndex((p) => p.id === cleanProp.id || (p.refCode && p.refCode === cleanProp.refCode));
     if (idx >= 0) {
       current[idx] = cleanProp;
@@ -129,10 +134,10 @@ export const saveCustomLocalProperty = (property: Property) => {
   }
 };
 
-export const removeCustomLocalProperty = (id: string) => {
+export const removeCustomLocalProperty = (id: string, refCode?: string) => {
   try {
     const current = getCustomLocalProperties();
-    const filtered = current.filter((p) => p.id !== id);
+    const filtered = current.filter((p) => p.id !== id && (!refCode || p.refCode !== refCode));
     localStorage.setItem(CUSTOM_PROPERTIES_KEY, JSON.stringify(filtered));
     window.dispatchEvent(new Event('mef_local_properties_updated'));
   } catch (e) {
@@ -247,9 +252,13 @@ export const subscribeToProperties = (
     return onSnapshot(
       q,
       (snapshot) => {
+        const deletedIds = new Set(getDeletedPropertyIds());
+
         if (snapshot.empty) {
           console.log('Firestore collection is empty. Auto-syncing custom local properties...');
-          const customLocal = getCustomLocalProperties();
+          const customLocal = getCustomLocalProperties().filter(
+            p => !deletedIds.has(p.id) && (!p.refCode || !deletedIds.has(p.refCode))
+          );
           
           customLocal.forEach((prop) => {
             const docRef = doc(db, PROPERTIES_COLLECTION, prop.id);
@@ -267,12 +276,20 @@ export const subscribeToProperties = (
         const firestorePropsMap = new Map<string, Property>();
         snapshot.docs.forEach((docSnap) => {
           const prop = mapDocToProperty(docSnap.id, docSnap.data());
+          // If property is in deleted list, purge it from Firestore and ignore
+          if (deletedIds.has(docSnap.id) || deletedIds.has(prop.id) || (prop.refCode && deletedIds.has(prop.refCode))) {
+            deleteDoc(docSnap.ref).catch(() => {});
+            return;
+          }
           firestorePropsMap.set(prop.id, prop);
         });
 
         // Add local custom properties if they aren't in Firestore yet
         const customLocal = getCustomLocalProperties();
         customLocal.forEach((customProp) => {
+          if (deletedIds.has(customProp.id) || (customProp.refCode && deletedIds.has(customProp.refCode))) {
+            return;
+          }
           if (!firestorePropsMap.has(customProp.id)) {
             firestorePropsMap.set(customProp.id, customProp);
             
@@ -432,15 +449,47 @@ export const updatePropertyInFirestore = async (id: string, propertyData: Partia
 /**
  * Delete a property from Firestore (and localStorage).
  */
-export const deletePropertyFromFirestore = async (id: string) => {
-  markPropertyAsDeletedLocal(id);
-  removeCustomLocalProperty(id);
+export const deletePropertyFromFirestore = async (id: string, refCode?: string) => {
+  markPropertyAsDeletedLocal(id, refCode);
+  removeCustomLocalProperty(id, refCode);
+
   if (db) {
     try {
+      // 1. Direct doc deletion
       const docRef = doc(db, PROPERTIES_COLLECTION, id);
-      await deleteDoc(docRef);
+      await deleteDoc(docRef).catch(() => {});
+
+      if (refCode && refCode !== id) {
+        const refDocRef = doc(db, PROPERTIES_COLLECTION, refCode);
+        await deleteDoc(refDocRef).catch(() => {});
+      }
+
+      // 2. Query and delete all matching documents (by doc.id, id property or refCode)
+      const qSnap = await getDocs(collection(db, PROPERTIES_COLLECTION));
+      const deletePromises: Promise<void>[] = [];
+      
+      qSnap.forEach((dSnap) => {
+        const data = dSnap.data();
+        if (
+          dSnap.id === id || 
+          (refCode && dSnap.id === refCode) ||
+          data.id === id || 
+          (refCode && data.refCode === refCode)
+        ) {
+          deletePromises.push(deleteDoc(dSnap.ref).catch(() => {}));
+        }
+      });
+
+      if (deletePromises.length > 0) {
+        await Promise.all(deletePromises);
+      }
     } catch (e) {
-      handleFirestoreError(e, OperationType.DELETE, `${PROPERTIES_COLLECTION}/${id}`);
+      console.warn('Notice during Firestore deleteDoc:', e);
+      try {
+        handleFirestoreError(e, OperationType.DELETE, `${PROPERTIES_COLLECTION}/${id}`);
+      } catch {
+        // Fallback gracefully so local deletion is never blocked
+      }
     }
   }
 };

@@ -252,11 +252,11 @@ export default function App() {
     }
   };
 
-  const handleDeleteProperty = async (id: string) => {
+  const handleDeleteProperty = async (id: string, refCode?: string) => {
     // Optimistically update local React state immediately so item is removed from view
-    setProperties((prev) => prev.filter((p) => p.id !== id));
+    setProperties((prev) => prev.filter((p) => p.id !== id && (!refCode || p.refCode !== refCode)));
     try {
-      await deletePropertyFromFirestore(id);
+      await deletePropertyFromFirestore(id, refCode);
     } catch (err: any) {
       console.warn('Notice deleting property from Firestore:', err);
     }
