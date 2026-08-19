@@ -156,7 +156,7 @@ export default function App() {
           setFirebaseError(null);
         }
 
-        // Preload the first batch of property images in background for instant display
+        // Preload the first batch of property images asynchronously in background
         if (liveProperties && liveProperties.length > 0) {
           const criticalImageUrls: string[] = [];
           liveProperties.slice(0, 6).forEach((p) => {
@@ -164,7 +164,7 @@ export default function App() {
               criticalImageUrls.push(p.images[0]);
             }
           });
-          await preloadImages(criticalImageUrls, 1200);
+          preloadImages(criticalImageUrls, 1000).catch(() => {});
         }
 
         setIsInitialLoading(false);
@@ -503,7 +503,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-800 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
       {/* LUXURIOUS INSTITUTIONAL PRELOADER */}
-      <Preloader isLoading={isInitialLoading} minDisplayTimeMs={1100} />
+      <Preloader isLoading={isInitialLoading} minDisplayTimeMs={300} />
 
       {/* Dynamic SEO & Head Tags Manager */}
       <SEOHead
@@ -594,7 +594,17 @@ export default function App() {
         </div>
       </div>
 
-      <main className="flex-1 relative z-0 bg-[#F8FAFC] overflow-hidden">
+      <main className="flex-1 relative z-0 min-h-screen overflow-hidden">
+        {/* Fixed background behind property cards as requested */}
+        <div 
+          className="fixed inset-0 z-0 pointer-events-none bg-fixed bg-center bg-cover bg-no-repeat transition-opacity duration-700"
+          style={{
+            backgroundImage: `url(${getAssetUrl('fondopropiedades.png')})`,
+          }}
+        />
+        {/* Subtle overlay for optimal contrast and legibility */}
+        <div className="fixed inset-0 z-0 pointer-events-none bg-slate-900/10 backdrop-brightness-[0.98]" />
+
         <div className="relative z-10">
         {/* 3. MAIN PROPERTIES LISTING SECTION */}
         <section id="propiedades" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
@@ -606,7 +616,7 @@ export default function App() {
           />
 
           {/* SECTION HEADER BAR */}
-          <div id="catalogo" className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+          <div id="catalogo" className="bg-white/95 backdrop-blur-md p-6 sm:p-7 rounded-3xl border border-slate-200/80 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#D3122A]"></span>
@@ -819,7 +829,7 @@ export default function App() {
           ) : viewMode === 'grid' ? (
             <div className="space-y-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {paginatedProperties.map((property) => (
+                {paginatedProperties.map((property, idx) => (
                   <PropertyCard
                     key={property.id}
                     property={property}
@@ -830,6 +840,7 @@ export default function App() {
                     isAdmin={isAdminLoggedIn}
                     onEditProperty={handleEditProperty}
                     onDeleteProperty={handleDeleteProperty}
+                    isPriority={idx < 6}
                     onMoveUpProperty={
                       filters.sortBy === 'recent' ? handleMovePropertyUp : undefined
                     }

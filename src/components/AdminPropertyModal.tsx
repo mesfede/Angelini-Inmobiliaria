@@ -421,7 +421,7 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         if (!file.type.startsWith('image/')) continue;
-        const result = await compressImageFile(file, { maxWidth: 1600, quality: 0.82 });
+        const result = await compressImageFile(file, { maxWidth: 1280, maxHeight: 960, quality: 0.78 });
         compressedUrls.push(result.dataUrl);
       }
 

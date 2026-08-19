@@ -74,7 +74,10 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
             src={sanitizeImageUrl(spotlightProperty.images?.[0])}
             alt={spotlightProperty.title}
             loading="eager"
+            // @ts-ignore
+            fetchPriority="high"
             decoding="async"
+            referrerPolicy="no-referrer"
             className="absolute inset-0 w-full h-full object-cover scale-[1.05] origin-center group-hover/img:scale-[1.09] transition-transform duration-700 brightness-[1.03] contrast-[1.02] saturate-[1.06]"
             onError={(e) => {
               if (e.currentTarget.dataset.hasError) return;

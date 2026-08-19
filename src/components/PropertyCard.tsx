@@ -16,6 +16,7 @@ interface PropertyCardProps {
   onDeleteProperty?: (id: string, refCode?: string) => void;
   onMoveUpProperty?: (id: string) => void;
   onMoveDownProperty?: (id: string) => void;
+  isPriority?: boolean;
 }
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -29,21 +30,25 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   onDeleteProperty,
   onMoveUpProperty,
   onMoveDownProperty,
+  isPriority = false,
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const cleanImages = sanitizePropertyImages(property.images);
   const activePhoto = sanitizeImageUrl(cleanImages[currentImageIndex] || cleanImages[0]);
 
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setIsImageLoaded(false);
     setCurrentImageIndex((prev) => (prev + 1) % cleanImages.length);
   };
 
   const prevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setIsImageLoaded(false);
     setCurrentImageIndex((prev) => (prev - 1 + cleanImages.length) % cleanImages.length);
   };
 
@@ -56,6 +61,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
     const touchEndX = e.changedTouches[0].clientX;
     const diff = touchStartX - touchEndX;
     if (Math.abs(diff) > 35) {
+      setIsImageLoaded(false);
       if (diff > 0) {
         setCurrentImageIndex((prev) => (prev + 1) % cleanImages.length);
       } else {
@@ -100,18 +106,33 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
     <div className="group bg-white rounded-2xl overflow-hidden border border-[#dbdad8] shadow-sm hover:shadow-xl hover:border-[#B08237]/50 transition-all duration-300 flex flex-col justify-between">
       {/* CARD TOP IMAGE CONTAINER */}
       <div 
-        className="relative aspect-4/3 overflow-hidden bg-slate-100 cursor-pointer select-none" 
+        className="relative aspect-4/3 overflow-hidden bg-slate-200 cursor-pointer select-none" 
         onClick={() => onSelectProperty(property)}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
+        {/* Instant skeleton shimmer while image is being decoded */}
+        {!isImageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 animate-pulse" />
+        )}
         <img
           src={activePhoto}
           alt={property.title}
-          loading="lazy"
+          loading={isPriority ? 'eager' : 'lazy'}
+          // @ts-ignore
+          fetchPriority={isPriority ? 'high' : 'auto'}
           decoding="async"
-          className="w-full h-full object-cover scale-[1.05] origin-center group-hover:scale-[1.09] transition-transform duration-500 pointer-events-none"
-          onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}
+          referrerPolicy="no-referrer"
+          onLoad={() => setIsImageLoaded(true)}
+          className={`w-full h-full object-cover scale-[1.05] origin-center group-hover:scale-[1.09] transition-all duration-300 pointer-events-none ${
+            isImageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          onError={(e) => {
+            setIsImageLoaded(true);
+            if (e.currentTarget.dataset.hasError) return;
+            e.currentTarget.dataset.hasError = 'true';
+            e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE;
+          }}
         />
         
         {/* Angelini Inmobiliaria Official Watermark Logo (All white with transparency) */}
