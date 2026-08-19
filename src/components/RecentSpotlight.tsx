@@ -129,47 +129,42 @@ export const RecentSpotlight: React.FC<RecentSpotlightProps> = ({
 
         {/* DETAILS COLUMN */}
         <div className="w-full lg:w-1/2 flex flex-col justify-between space-y-4">
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
               {/* Header Label */}
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#B08237] animate-ping shrink-0" />
                 <span className="text-xs font-semibold text-[#dbdad8]">
                   Oportunidad exclusiva Angelini
                 </span>
               </div>
 
-              {/* 1. Title */}
-              <h3
-                onClick={() => onSelectProperty(spotlightProperty)}
-                className="text-xl sm:text-2xl font-bold text-white leading-snug hover:text-[#B08237] transition-colors cursor-pointer drop-shadow-sm font-['Playfair_Display','Libre_Baskerville',Georgia,serif]"
-              >
-                {formatPropertyTitle(spotlightProperty.title)}
-              </h3>
-
-              {/* 2. Price / Consultar */}
-              <div className="flex items-center gap-3 mt-2 flex-wrap">
-                <span className="text-2xl sm:text-3xl font-black text-[#dbdad8] tracking-tight inline-block">
+              {/* 1. Price (Prominent top/hero placement) */}
+              <div className="mb-2">
+                <span className="text-3xl sm:text-4xl font-black text-white tracking-tight inline-block drop-shadow-sm font-['Plus_Jakarta_Sans',sans-serif]">
                   {displayPrice()}
                 </span>
               </div>
 
+              {/* 2. Title */}
+              <h3
+                onClick={() => onSelectProperty(spotlightProperty)}
+                className="text-xl sm:text-2xl font-bold text-white leading-snug hover:text-[#B08237] transition-colors cursor-pointer drop-shadow-sm font-['Plus_Jakarta_Sans',sans-serif]"
+              >
+                {formatPropertyTitle(spotlightProperty.title)}
+              </h3>
+
               {/* 3. Address & location */}
-              <div className="flex items-center justify-between gap-2 mt-2.5 flex-wrap">
-                <p className="text-xs text-white/90 font-medium flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#B08237] shrink-0" />
+              <div className="flex items-center gap-2 mt-2 flex-wrap">
+                <p className="text-xs sm:text-sm text-white/90 font-medium flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-xl border border-white/10">
+                  <MapPin className="w-4 h-4 text-[#B08237] shrink-0" />
                   <span>{formatFullAddress(spotlightProperty.location.address, spotlightProperty.location.zone, spotlightProperty.location.city)}</span>
                 </p>
               </div>
             </div>
 
-            {/* Description (White / light text) */}
-            <p className="hidden sm:block text-xs text-[#dbdad8]/90 line-clamp-3 leading-relaxed">
-              {spotlightProperty.description}
-            </p>
-
             {/* Quick Specs with gold icon accents and white text */}
-            <div className="grid grid-cols-4 gap-2 text-center bg-white/10 backdrop-blur-xs border border-white/15 text-white py-3 px-2 rounded-2xl shadow-inner">
+            <div className="grid grid-cols-4 gap-2 text-center bg-white/10 backdrop-blur-xs border border-white/15 text-white py-3.5 px-2 rounded-2xl shadow-inner">
               <div className="flex flex-col items-center justify-center">
                 <span className="font-bold text-white text-sm sm:text-base leading-none">
                   {spotlightProperty.coveredArea || spotlightProperty.totalArea ? `${spotlightProperty.coveredArea || spotlightProperty.totalArea} m²` : '—'}
