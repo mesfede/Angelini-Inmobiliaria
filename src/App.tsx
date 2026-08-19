@@ -456,6 +456,20 @@ export default function App() {
     return filteredProperties.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredProperties, currentPage]);
 
+  // Warm up browser image cache immediately for all visible cards on the active page
+  useEffect(() => {
+    if (paginatedProperties && paginatedProperties.length > 0) {
+      paginatedProperties.forEach((p) => {
+        const cover = p.images?.[0];
+        if (cover && typeof cover === 'string' && (cover.startsWith('http://') || cover.startsWith('https://'))) {
+          const img = new Image();
+          img.decoding = 'async';
+          img.src = cover;
+        }
+      });
+    }
+  }, [paginatedProperties]);
+
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);

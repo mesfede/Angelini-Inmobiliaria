@@ -35,20 +35,17 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const cleanImages = sanitizePropertyImages(property.images);
   const activePhoto = sanitizeImageUrl(cleanImages[currentImageIndex] || cleanImages[0]);
 
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsImageLoaded(false);
     setCurrentImageIndex((prev) => (prev + 1) % cleanImages.length);
   };
 
   const prevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsImageLoaded(false);
     setCurrentImageIndex((prev) => (prev - 1 + cleanImages.length) % cleanImages.length);
   };
 
@@ -61,7 +58,6 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
     const touchEndX = e.changedTouches[0].clientX;
     const diff = touchStartX - touchEndX;
     if (Math.abs(diff) > 35) {
-      setIsImageLoaded(false);
       if (diff > 0) {
         setCurrentImageIndex((prev) => (prev + 1) % cleanImages.length);
       } else {
@@ -111,24 +107,16 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Instant skeleton shimmer while image is being decoded */}
-        {!isImageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 animate-pulse" />
-        )}
         <img
           src={activePhoto}
           alt={property.title}
-          loading={isPriority ? 'eager' : 'lazy'}
+          loading="eager"
           // @ts-ignore
           fetchPriority={isPriority ? 'high' : 'auto'}
           decoding="async"
           referrerPolicy="no-referrer"
-          onLoad={() => setIsImageLoaded(true)}
-          className={`w-full h-full object-cover scale-[1.05] origin-center group-hover:scale-[1.09] transition-all duration-300 pointer-events-none ${
-            isImageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="w-full h-full object-cover scale-[1.05] origin-center group-hover:scale-[1.09] transition-transform duration-500 pointer-events-none"
           onError={(e) => {
-            setIsImageLoaded(true);
             if (e.currentTarget.dataset.hasError) return;
             e.currentTarget.dataset.hasError = 'true';
             e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE;
