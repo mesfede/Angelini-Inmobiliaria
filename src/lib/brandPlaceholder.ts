@@ -46,30 +46,60 @@ export const BRAND_PLACEHOLDER_IMAGE = `data:image/svg+xml;utf8,${encodeURICompo
 export const BRAND_AGENT_AVATAR = '/angelini-bull-emblem.svg';
 
 /**
- * Checks whether an image URL is a generic stock photo, unsplash url, empty or invalid placeholder.
+ * Normalizes an image URL (supports HTTP/HTTPS, base64, Google Drive share links, Dropbox, etc.)
+ */
+export const normalizeImageUrl = (rawUrl?: string | null): string => {
+  if (!rawUrl || typeof rawUrl !== 'string') return '';
+  let url = rawUrl.trim();
+  if (!url || url === 'undefined' || url === 'null') return '';
+
+  // Handle data:image, blob:
+  if (url.startsWith('data:image/') || url.startsWith('blob:')) {
+    return url;
+  }
+
+  // Handle missing protocol
+  if (url.startsWith('www.')) {
+    url = 'https://' + url;
+  } else if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('//')) {
+    if (url.includes('.') && !url.includes(' ')) {
+      url = 'https://' + url;
+    }
+  } else if (url.startsWith('//')) {
+    url = 'https:' + url;
+  }
+
+  // Google Drive share link converter
+  if (url.includes('drive.google.com')) {
+    const fileIdMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (fileIdMatch && fileIdMatch[1]) {
+      return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+    }
+  }
+
+  // Google Drive direct export links
+  if (url.includes('drive.google.com/uc')) {
+    const fileIdMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (fileIdMatch && fileIdMatch[1]) {
+      return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+    }
+  }
+
+  // Dropbox link converter
+  if (url.includes('dropbox.com')) {
+    return url.replace('?dl=0', '?raw=1').replace('&dl=0', '&raw=1').replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+  }
+
+  return url;
+};
+
+/**
+ * Checks whether an image URL is empty or invalid.
  */
 export const isStockOrInvalidImage = (url?: string | null): boolean => {
   if (!url || typeof url !== 'string') return true;
-  const trimmed = url.trim();
-  if (!trimmed) return true;
-  
-  const lower = trimmed.toLowerCase();
-  if (
-    lower.includes('unsplash.com') ||
-    lower.includes('images.unsplash') ||
-    lower.includes('pexels.com') ||
-    lower.includes('pixabay.com') ||
-    lower.includes('placeholder.com') ||
-    lower.includes('via.placeholder') ||
-    lower.includes('dummyimage') ||
-    lower.includes('stock-photo') ||
-    lower.includes('photo-1600596542815') ||
-    lower.includes('photo-1600585154340') ||
-    lower.includes('photo-1512917774080') ||
-    lower.includes('photo-1560250097')
-  ) {
-    return true;
-  }
+  const normalized = normalizeImageUrl(url);
+  if (!normalized || normalized.length < 5) return true;
   return false;
 };
 
@@ -77,14 +107,15 @@ export const isStockOrInvalidImage = (url?: string | null): boolean => {
  * Returns either the clean real user image URL or the official Angelini branded placeholder.
  */
 export const sanitizeImageUrl = (url?: string | null, fallback: string = BRAND_PLACEHOLDER_IMAGE): string => {
-  if (isStockOrInvalidImage(url)) {
+  const normalized = normalizeImageUrl(url);
+  if (!normalized) {
     return fallback;
   }
-  return url!.trim();
+  return normalized;
 };
 
 /**
- * Sanitizes a list of property images, eliminating all stock/unsplash links and guaranteeing
+ * Sanitizes a list of property images, guaranteeing
  * that if no valid user photo exists, it contains [BRAND_PLACEHOLDER_IMAGE].
  */
 export const sanitizePropertyImages = (images?: string[] | null): string[] => {
@@ -93,8 +124,8 @@ export const sanitizePropertyImages = (images?: string[] | null): string[] => {
   }
 
   const cleanList = images
-    .filter((img) => typeof img === 'string' && img.trim().length > 0 && !isStockOrInvalidImage(img))
-    .map((img) => img.trim());
+    .map((img) => normalizeImageUrl(img))
+    .filter((img) => img.length > 0);
 
   if (cleanList.length === 0) {
     return [BRAND_PLACEHOLDER_IMAGE];

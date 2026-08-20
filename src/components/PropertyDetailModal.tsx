@@ -192,7 +192,6 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                   alt={property.title}
                   loading="eager"
                   decoding="async"
-                  referrerPolicy="no-referrer"
                   className="w-full h-full object-cover scale-[1.05] origin-center transition-all duration-300 group-hover:scale-[1.07]"
                   onError={(e) => { if (e.currentTarget.dataset.hasError) return; e.currentTarget.dataset.hasError = 'true'; e.currentTarget.src = BRAND_PLACEHOLDER_IMAGE; }}
                 />

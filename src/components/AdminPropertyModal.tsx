@@ -33,7 +33,7 @@ import {
 } from 'lucide-react';
 import { Property, OperationType, PropertyType } from '../types';
 import { ZONES_LIST } from '../data/properties';
-import { BRAND_PLACEHOLDER_IMAGE, sanitizePropertyImages, isStockOrInvalidImage } from '../lib/brandPlaceholder';
+import { BRAND_PLACEHOLDER_IMAGE, sanitizePropertyImages, isStockOrInvalidImage, normalizeImageUrl } from '../lib/brandPlaceholder';
 import { addPropertyToFirestore, updatePropertyInFirestore, saveCustomLocalProperty } from '../services/propertyService';
 import { compressImageFile } from '../lib/imageOptimizer';
 import { parseInstagramListing, ParsedPropertyData } from '../lib/instagramParser';
@@ -308,7 +308,7 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
 
       setDescription(propertyToEdit.description || '');
 
-      const cleanInitialImages = (propertyToEdit.images || []).filter(img => !isStockOrInvalidImage(img));
+      const cleanInitialImages = (propertyToEdit.images || []).map(img => normalizeImageUrl(img)).filter(img => img.length > 0);
       setImageUrlsText(cleanInitialImages.join('\n'));
       setMainImageIndex(0);
       setVideoUrl(propertyToEdit.videoUrl || '');
@@ -407,9 +407,10 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
 
   // Helper to parse image URLs from textarea (URLs or compressed data URLs)
   const parsedImageUrls = imageUrlsText
-    .split(/\r?\n/)
+    .split(/[\s\r\n,;]+/)
     .map((url) => url.trim())
-    .filter((url) => url.length > 5 && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image/')) && !isStockOrInvalidImage(url));
+    .filter((url) => url.length > 5)
+    .map((url) => normalizeImageUrl(url));
 
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
